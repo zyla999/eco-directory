@@ -2,6 +2,7 @@
   {
     "id": "the-well-refill-san-francisco",
     "name": "The Well Refill",
+    "logo": "/logos/the-well-refill-san-francisco.svg",
     "description": "San Francisco's neighborhood refillery specializing in non-toxic cleaning supplies, organic body care, and sustainable lifestyle products. Zero-waste shopping made easy.",
     "categories": ["refillery", "zero-waste"],
     "type": "brick-and-mortar",
@@ -32,6 +33,7 @@
   {
     "id": "sustain-la-los-angeles",
     "name": "Sustain LA",
+    "logo": "/logos/sustain-la-los-angeles.svg",
     "description": "Los Angeles zero-waste store offering package-free groceries, refillable home and body products, and sustainable goods. Community workshops on sustainable living.",
     "categories": ["zero-waste", "bulk-foods", "refillery"],
     "type": "brick-and-mortar",

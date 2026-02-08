@@ -2,6 +2,7 @@
   {
     "id": "the-refill-shoppe-portland",
     "name": "The Refill Shoppe",
+    "logo": "/logos/the-refill-shoppe-portland.svg",
     "description": "Portland's original refillery offering a wide selection of household cleaners, personal care products, and laundry supplies. Bring your own containers or purchase reusable ones in-store.",
     "categories": ["refillery", "zero-waste"],
     "type": "brick-and-mortar",
@@ -32,6 +33,7 @@
   {
     "id": "green-earth-goods-portland",
     "name": "Green Earth Goods",
+    "logo": "/logos/green-earth-goods-portland.svg",
     "description": "A zero-waste grocery and lifestyle store featuring bulk foods, sustainable home goods, and eco-friendly personal care products. Committed to plastic-free shopping.",
     "categories": ["zero-waste", "bulk-foods", "sustainable-goods"],
     "type": "brick-and-mortar",

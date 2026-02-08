@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getStoreById, getAllStores } from "@/lib/stores";
 import { Metadata } from "next";
 
@@ -71,13 +72,13 @@ export default async function StorePage({ params }: StorePageProps) {
         <div className="p-8">
           {/* Header */}
           <div className="flex items-start gap-6 mb-6">
-            {store.logo && (
-              <img
-                src={store.logo}
-                alt={`${store.name} logo`}
-                className="w-20 h-20 object-contain rounded-lg border border-gray-200"
-              />
-            )}
+            <Image
+              src={store.logo || "/logos/default.svg"}
+              alt={`${store.name} logo`}
+              width={80}
+              height={80}
+              className="w-20 h-20 object-contain rounded-lg border border-gray-200"
+            />
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900">{store.name}</h1>
               <p className="text-gray-500 mt-1">

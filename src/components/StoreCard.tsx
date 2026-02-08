@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Store } from "@/types/store";
 
 interface StoreCardProps {
@@ -32,13 +33,13 @@ export default function StoreCard({ store }: StoreCardProps) {
               {store.type === "online" && " (Online)"}
             </p>
           </div>
-          {store.logo && (
-            <img
-              src={store.logo}
-              alt={`${store.name} logo`}
-              className="w-12 h-12 object-contain rounded"
-            />
-          )}
+          <Image
+            src={store.logo || "/logos/default.svg"}
+            alt={`${store.name} logo`}
+            width={48}
+            height={48}
+            className="w-12 h-12 object-contain rounded"
+          />
         </div>
 
         <p className="text-gray-600 text-sm mt-3 line-clamp-2">

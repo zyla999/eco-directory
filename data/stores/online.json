@@ -2,6 +2,7 @@
   {
     "id": "earthhero-online",
     "name": "EarthHero",
+    "logo": "/logos/earthhero-online.svg",
     "description": "Online marketplace for sustainable products across all categories. Curated selection of eco-friendly brands with carbon-neutral shipping and plastic-free packaging.",
     "categories": ["sustainable-goods", "online-only"],
     "type": "online",
@@ -26,6 +27,7 @@
   {
     "id": "package-free-shop-online",
     "name": "Package Free Shop",
+    "logo": "/logos/package-free-shop-online.svg",
     "description": "Founded by zero-waste advocate Lauren Singer. Online store offering plastic-free alternatives for everyday products, from kitchen to bathroom to on-the-go.",
     "categories": ["zero-waste", "sustainable-goods", "online-only"],
     "type": "online",
