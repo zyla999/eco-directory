@@ -1,7 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import SearchBar from "@/components/SearchBar";
 import StoreCard from "@/components/StoreCard";
 import CategoryCard from "@/components/CategoryCard";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { getAllStores, getCategories, getStoreStats } from "@/lib/stores";
 
 export default function Home() {
@@ -19,17 +21,25 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="relative overflow-hidden text-white">
+        <Image
+          src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-800/85 to-green-950/90 hero-gradient-animated" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 animate-hero-title">
               Find Eco-Friendly Stores Near You
             </h1>
-            <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto animate-hero-subtitle">
               Discover refilleries, zero-waste shops, and sustainable businesses
               across North America. Shop consciously, live sustainably.
             </p>
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto animate-hero-search">
               <SearchBar large />
             </div>
           </div>
@@ -40,30 +50,21 @@ export default function Home() {
       <section className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-green-700">
-                {stats.totalStores}
-              </div>
-              <div className="text-gray-500">Stores Listed</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-green-700">
-                {stats.totalCities}
-              </div>
-              <div className="text-gray-500">Cities</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-green-700">
-                {stats.byCountry.USA}
-              </div>
-              <div className="text-gray-500">USA Stores</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-green-700">
-                {stats.byCountry.Canada}
-              </div>
-              <div className="text-gray-500">Canada Stores</div>
-            </div>
+            {[
+              { value: stats.totalStores, label: "Stores Listed" },
+              { value: stats.totalCities, label: "Cities" },
+              { value: stats.byCountry.USA, label: "USA Stores" },
+              { value: stats.byCountry.Canada, label: "Canada Stores" },
+            ].map((stat, i) => (
+              <AnimateOnScroll key={stat.label} animation="fade-in-up" stagger={i + 1}>
+                <div className="border-l-4 border-green-500 pl-4">
+                  <div className="text-3xl font-bold text-green-700">
+                    {stat.value}
+                  </div>
+                  <div className="text-gray-500">{stat.label}</div>
+                </div>
+              </AnimateOnScroll>
+            ))}
           </div>
         </div>
       </section>
@@ -71,16 +72,19 @@ export default function Home() {
       {/* Categories Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
-            Browse by Category
-          </h2>
+          <AnimateOnScroll animation="slide-in-left">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+              Browse by Category
+            </h2>
+          </AnimateOnScroll>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {categoryCounts.map(({ category, count }) => (
-              <CategoryCard
-                key={category.id}
-                category={category}
-                storeCount={count}
-              />
+            {categoryCounts.map(({ category, count }, i) => (
+              <AnimateOnScroll key={category.id} animation="fade-in-up" stagger={Math.min(i + 1, 7)} className="h-full">
+                <CategoryCard
+                  category={category}
+                  storeCount={count}
+                />
+              </AnimateOnScroll>
             ))}
           </div>
         </div>
@@ -89,20 +93,24 @@ export default function Home() {
       {/* Featured Stores Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Featured Stores
-            </h2>
-            <Link
-              href="/stores"
-              className="text-green-600 hover:text-green-700 font-medium"
-            >
-              View all stores →
-            </Link>
-          </div>
+          <AnimateOnScroll animation="fade-in">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Featured Stores
+              </h2>
+              <Link
+                href="/stores"
+                className="text-green-600 hover:text-green-700 font-medium"
+              >
+                View all stores →
+              </Link>
+            </div>
+          </AnimateOnScroll>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredStores.map((store) => (
-              <StoreCard key={store.id} store={store} />
+            {featuredStores.map((store, i) => (
+              <AnimateOnScroll key={store.id} animation="fade-in-up" stagger={i + 1} className="h-full">
+                <StoreCard store={store} />
+              </AnimateOnScroll>
             ))}
           </div>
         </div>
@@ -111,21 +119,31 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-green-50 rounded-2xl p-8 md:p-12 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Own an Eco-Friendly Store?
-            </h2>
-            <p className="text-gray-600 mb-6 max-w-xl mx-auto">
-              Get your store listed in our directory and help more people
-              discover sustainable shopping options in their area.
-            </p>
-            <Link
-              href="/submit"
-              className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition"
-            >
-              Submit Your Store
-            </Link>
-          </div>
+          <AnimateOnScroll animation="scale-in">
+            <div className="relative rounded-2xl overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&q=80"
+                alt=""
+                fill
+                className="object-cover"
+              />
+              <div className="relative bg-green-900/60 backdrop-blur-sm p-8 md:p-12 text-center">
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Own an Eco-Friendly Store?
+                </h2>
+                <p className="text-green-100 mb-6 max-w-xl mx-auto">
+                  Get your store listed in our directory and help more people
+                  discover sustainable shopping options in their area.
+                </p>
+                <Link
+                  href="/submit"
+                  className="inline-block bg-white text-green-700 px-6 py-3 rounded-lg font-medium hover:bg-green-50 hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300"
+                >
+                  Submit Your Store
+                </Link>
+              </div>
+            </div>
+          </AnimateOnScroll>
         </div>
       </section>
     </div>

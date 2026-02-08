@@ -20,7 +20,7 @@ export default function StoreCard({ store }: StoreCardProps) {
   return (
     <Link
       href={`/stores/${store.id}`}
-      className="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow overflow-hidden"
+      className="block h-full bg-white rounded-lg shadow-sm border border-gray-200 card-hover-lift overflow-hidden"
     >
       <div className="p-6">
         <div className="flex items-start justify-between">

@@ -1,6 +1,6 @@
-import { Suspense } from "react";
 import SearchBar from "@/components/SearchBar";
 import StoreCard from "@/components/StoreCard";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
 import {
   getAllStores,
   searchStores,
@@ -44,81 +44,83 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Sidebar */}
-        <aside className="lg:w-64 flex-shrink-0">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Filters</h3>
+        <AnimateOnScroll animation="slide-in-left">
+          <aside className="lg:w-64 flex-shrink-0">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Filters</h3>
 
-            {/* Category Filter */}
-            <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">
-                Category
-              </h4>
-              <div className="space-y-2">
-                <a
-                  href="/stores"
-                  className={`block text-sm ${
-                    !categoryFilter
-                      ? "text-green-600 font-medium"
-                      : "text-gray-600 hover:text-green-600"
-                  }`}
-                >
-                  All Categories
-                </a>
-                {categories.map((cat) => (
+              {/* Category Filter */}
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </h4>
+                <div className="space-y-2">
                   <a
-                    key={cat.id}
-                    href={`/stores?category=${cat.id}${
-                      stateFilter ? `&state=${stateFilter}` : ""
-                    }`}
+                    href="/stores"
                     className={`block text-sm ${
-                      categoryFilter === cat.id
+                      !categoryFilter
                         ? "text-green-600 font-medium"
                         : "text-gray-600 hover:text-green-600"
                     }`}
                   >
-                    {cat.name}
+                    All Categories
                   </a>
-                ))}
+                  {categories.map((cat) => (
+                    <a
+                      key={cat.id}
+                      href={`/stores?category=${cat.id}${
+                        stateFilter ? `&state=${stateFilter}` : ""
+                      }`}
+                      className={`block text-sm ${
+                        categoryFilter === cat.id
+                          ? "text-green-600 font-medium"
+                          : "text-gray-600 hover:text-green-600"
+                      }`}
+                    >
+                      {cat.name}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* State Filter */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">
-                State/Province
-              </h4>
-              <div className="space-y-2">
-                <a
-                  href={`/stores${
-                    categoryFilter ? `?category=${categoryFilter}` : ""
-                  }`}
-                  className={`block text-sm ${
-                    !stateFilter
-                      ? "text-green-600 font-medium"
-                      : "text-gray-600 hover:text-green-600"
-                  }`}
-                >
-                  All Locations
-                </a>
-                {states.map((state) => (
+              {/* State Filter */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  State/Province
+                </h4>
+                <div className="space-y-2">
                   <a
-                    key={state}
-                    href={`/stores?state=${state}${
-                      categoryFilter ? `&category=${categoryFilter}` : ""
+                    href={`/stores${
+                      categoryFilter ? `?category=${categoryFilter}` : ""
                     }`}
                     className={`block text-sm ${
-                      stateFilter === state
+                      !stateFilter
                         ? "text-green-600 font-medium"
                         : "text-gray-600 hover:text-green-600"
                     }`}
                   >
-                    {state}
+                    All Locations
                   </a>
-                ))}
+                  {states.map((state) => (
+                    <a
+                      key={state}
+                      href={`/stores?state=${state}${
+                        categoryFilter ? `&category=${categoryFilter}` : ""
+                      }`}
+                      className={`block text-sm ${
+                        stateFilter === state
+                          ? "text-green-600 font-medium"
+                          : "text-gray-600 hover:text-green-600"
+                      }`}
+                    >
+                      {state}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </aside>
+          </aside>
+        </AnimateOnScroll>
 
         {/* Store Grid */}
         <div className="flex-1">
@@ -129,8 +131,10 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
 
           {stores.length > 0 ? (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {stores.map((store) => (
-                <StoreCard key={store.id} store={store} />
+              {stores.map((store, i) => (
+                <AnimateOnScroll key={store.id} animation="fade-in-up" stagger={Math.min((i % 6) + 1, 7)} className="h-full">
+                  <StoreCard store={store} />
+                </AnimateOnScroll>
               ))}
             </div>
           ) : (

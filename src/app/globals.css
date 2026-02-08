@@ -24,3 +24,201 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Animation Keyframes ── */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Scroll-triggered animation base ── */
+
+.animate-on-scroll {
+  opacity: 0;
+  transition: none;
+}
+
+.animate-on-scroll.is-visible {
+  animation-duration: 0.7s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+/* Animation type variants applied via data attribute */
+.animate-on-scroll.is-visible[data-animation="fade-in-up"],
+.animate-on-scroll.is-visible.anim-fade-in-up {
+  animation-name: fade-in-up;
+}
+
+.animate-on-scroll.is-visible[data-animation="fade-in"],
+.animate-on-scroll.is-visible.anim-fade-in {
+  animation-name: fade-in;
+}
+
+.animate-on-scroll.is-visible[data-animation="slide-in-left"],
+.animate-on-scroll.is-visible.anim-slide-in-left {
+  animation-name: slide-in-left;
+}
+
+.animate-on-scroll.is-visible[data-animation="slide-in-right"],
+.animate-on-scroll.is-visible.anim-slide-in-right {
+  animation-name: slide-in-right;
+}
+
+.animate-on-scroll.is-visible[data-animation="scale-in"],
+.animate-on-scroll.is-visible.anim-scale-in {
+  animation-name: scale-in;
+}
+
+/* ── Stagger delays ── */
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+.stagger-7 { animation-delay: 0.7s; }
+
+/* ── Hero entrance animations (play on load, not on scroll) ── */
+
+.animate-hero-title {
+  animation: fade-in-up 0.8s ease-out 0.2s both;
+}
+
+.animate-hero-subtitle {
+  animation: fade-in-up 0.8s ease-out 0.4s both;
+}
+
+.animate-hero-search {
+  animation: fade-in-up 0.8s ease-out 0.6s both;
+}
+
+/* ── Animated hero gradient ── */
+
+.hero-gradient-animated {
+  background-size: 200% 200%;
+  animation: hero-gradient-shift 8s ease infinite;
+}
+
+/* ── Card hover effects ── */
+
+.card-hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+              0 8px 10px -6px rgba(0, 0, 0, 0.06);
+}
+
+.card-hover-scale {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+              0 8px 10px -6px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Nav link animated underline ── */
+
+.nav-link-animated {
+  position: relative;
+}
+
+.nav-link-animated::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: #15803d;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-link-animated:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── Accessibility: reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll {
+    opacity: 1;
+  }
+
+  .animate-on-scroll.is-visible,
+  .animate-hero-title,
+  .animate-hero-subtitle,
+  .animate-hero-search,
+  .hero-gradient-animated {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .card-hover-lift:hover,
+  .card-hover-scale:hover {
+    transform: none;
+  }
+
+  .nav-link-animated::after {
+    transition: none;
+  }
+}

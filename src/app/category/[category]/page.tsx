@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import StoreCard from "@/components/StoreCard";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { getStoresByCategory, getCategories } from "@/lib/stores";
 import { Metadata } from "next";
 
@@ -62,18 +63,22 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </ol>
       </nav>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{cat.name}</h1>
-        <p className="text-gray-600">{cat.description}</p>
-        <p className="text-sm text-gray-500 mt-2">
-          {stores.length} store{stores.length !== 1 ? "s" : ""} in this category
-        </p>
-      </div>
+      <AnimateOnScroll animation="fade-in-up">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{cat.name}</h1>
+          <p className="text-gray-600">{cat.description}</p>
+          <p className="text-sm text-gray-500 mt-2">
+            {stores.length} store{stores.length !== 1 ? "s" : ""} in this category
+          </p>
+        </div>
+      </AnimateOnScroll>
 
       {stores.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stores.map((store) => (
-            <StoreCard key={store.id} store={store} />
+          {stores.map((store, i) => (
+            <AnimateOnScroll key={store.id} animation="fade-in-up" stagger={Math.min((i % 6) + 1, 7)} className="h-full">
+              <StoreCard store={store} />
+            </AnimateOnScroll>
           ))}
         </div>
       ) : (
