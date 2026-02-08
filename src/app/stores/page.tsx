@@ -6,6 +6,7 @@ import {
   searchStores,
   getCategories,
   getUniqueStates,
+  getStatesWithStores,
 } from "@/lib/stores";
 
 interface StoresPageProps {
@@ -34,11 +35,12 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
 
   const categories = getCategories();
   const states = getUniqueStates();
+  const statesWithStores = getStatesWithStores();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Browse Stores</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Browse Directory</h1>
         <SearchBar initialQuery={query} />
       </div>
 
@@ -101,20 +103,28 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
                   >
                     All Locations
                   </a>
-                  {states.map((state) => (
-                    <a
-                      key={state}
-                      href={`/stores?state=${state}${
-                        categoryFilter ? `&category=${categoryFilter}` : ""
-                      }`}
-                      className={`block text-sm ${
-                        stateFilter === state
-                          ? "text-green-600 font-medium"
-                          : "text-gray-600 hover:text-green-600"
-                      }`}
-                    >
-                      {state}
-                    </a>
+                  {statesWithStores.map((si) => (
+                    <div key={si.stateCode} className="flex items-center justify-between">
+                      <a
+                        href={`/stores?state=${si.stateCode}${
+                          categoryFilter ? `&category=${categoryFilter}` : ""
+                        }`}
+                        className={`block text-sm ${
+                          stateFilter === si.stateCode
+                            ? "text-green-600 font-medium"
+                            : "text-gray-600 hover:text-green-600"
+                        }`}
+                      >
+                        {si.stateCode}
+                      </a>
+                      <a
+                        href={`/location/${si.slug}`}
+                        className="text-xs text-gray-400 hover:text-green-600"
+                        title={`View all businesses in ${si.stateName}`}
+                      >
+                        View page →
+                      </a>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -125,7 +135,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
         {/* Store Grid */}
         <div className="flex-1">
           <div className="mb-4 text-gray-600">
-            {stores.length} store{stores.length !== 1 ? "s" : ""} found
+            {stores.length} business{stores.length !== 1 ? "es" : ""} found
             {query && ` for "${query}"`}
           </div>
 
@@ -140,7 +150,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
           ) : (
             <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
               <p className="text-gray-500">
-                No stores found matching your criteria.
+                No businesses found matching your criteria.
               </p>
               <a
                 href="/stores"

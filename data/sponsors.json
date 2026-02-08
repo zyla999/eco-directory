@@ -1,0 +1,16 @@
+[
+  {
+    "id": "eco-wholesale-co",
+    "name": "Eco Wholesale Co.",
+    "description": "North America's leading distributor of sustainable household and personal care products. Wholesale pricing for retailers and bulk buyers.",
+    "logo": "/logos/default.svg",
+    "website": "https://example.com",
+    "cta": "Learn More",
+    "placement": ["homepage-featured", "category-sidebar", "state-banner"],
+    "targetCategories": ["wholesale", "sustainable-goods", "refillery"],
+    "targetStates": ["CA", "OR", "ON"],
+    "startDate": "2025-01-01",
+    "endDate": "2025-12-31",
+    "isActive": true
+  }
+]

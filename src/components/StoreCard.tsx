@@ -1,20 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Store } from "@/types/store";
+import { categoryColors } from "@/lib/categoryConfig";
 
 interface StoreCardProps {
   store: Store;
 }
-
-const categoryColors: Record<string, string> = {
-  refillery: "bg-blue-100 text-blue-800",
-  "zero-waste": "bg-green-100 text-green-800",
-  "bulk-foods": "bg-amber-100 text-amber-800",
-  "sustainable-goods": "bg-emerald-100 text-emerald-800",
-  "thrift-consignment": "bg-purple-100 text-purple-800",
-  "farmers-market": "bg-orange-100 text-orange-800",
-  "online-only": "bg-cyan-100 text-cyan-800",
-};
 
 export default function StoreCard({ store }: StoreCardProps) {
   return (

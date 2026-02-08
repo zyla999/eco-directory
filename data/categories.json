@@ -6,12 +6,6 @@
     "icon": "droplet"
   },
   {
-    "id": "zero-waste",
-    "name": "Zero Waste",
-    "description": "Stores focused on zero-waste lifestyle products and package-free shopping",
-    "icon": "leaf"
-  },
-  {
     "id": "bulk-foods",
     "name": "Bulk Foods",
     "description": "Bulk food stores with sustainable practices and minimal packaging",
@@ -36,9 +30,21 @@
     "icon": "store"
   },
   {
-    "id": "online-only",
-    "name": "Online Store",
-    "description": "E-commerce stores specializing in eco-friendly products",
-    "icon": "globe"
+    "id": "manufacturer",
+    "name": "Manufacturer / Brand",
+    "description": "Eco-friendly product manufacturers and sustainable brands",
+    "icon": "factory"
+  },
+  {
+    "id": "wholesale",
+    "name": "Wholesale Distributor",
+    "description": "Wholesale distributors and B2B suppliers of eco-friendly products",
+    "icon": "truck"
+  },
+  {
+    "id": "service-provider",
+    "name": "Service Provider",
+    "description": "Sustainability consultants, green cleaning services, and eco-logistics",
+    "icon": "briefcase"
   }
 ]

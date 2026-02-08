@@ -1,15 +1,33 @@
 export type StoreCategory =
   | "refillery"
-  | "zero-waste"
   | "bulk-foods"
   | "sustainable-goods"
   | "thrift-consignment"
   | "farmers-market"
-  | "online-only";
+  | "manufacturer"
+  | "wholesale"
+  | "service-provider";
 
 export type StoreType = "brick-and-mortar" | "online" | "both";
 
 export type StoreStatus = "active" | "needs-review" | "closed";
+
+export type AdPlacement = "homepage-featured" | "category-sidebar" | "state-banner";
+
+export interface Sponsor {
+  id: string;
+  name: string;
+  description: string;
+  logo: string;
+  website: string;
+  cta: string;
+  placement: AdPlacement[];
+  targetCategories?: StoreCategory[];
+  targetStates?: string[];
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+}
 
 export interface StoreLocation {
   address?: string;

@@ -14,16 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Eco Directory - Find Eco-Friendly Stores in North America",
+  title: "Eco Directory - Eco-Friendly Business Directory for North America",
   description:
-    "Discover eco-friendly stores, refilleries, zero-waste shops, and sustainable businesses across the USA and Canada.",
+    "Discover eco-friendly stores, brands, wholesalers, and service providers across the USA and Canada. Your directory for sustainable businesses.",
   keywords: [
     "eco-friendly stores",
-    "zero waste",
+    "sustainable brands",
+    "eco wholesale",
     "refillery",
     "sustainable shopping",
-    "bulk foods",
-    "green stores",
+    "green business directory",
   ],
 };
 
@@ -53,7 +53,7 @@ export default function RootLayout({
                   href="/stores"
                   className="text-gray-600 hover:text-green-700 font-medium nav-link-animated"
                 >
-                  Browse Stores
+                  Browse Directory
                 </Link>
                 <Link
                   href="/map"
@@ -65,7 +65,7 @@ export default function RootLayout({
                   href="/submit"
                   className="text-gray-600 hover:text-green-700 font-medium nav-link-animated"
                 >
-                  Submit a Store
+                  List Your Business
                 </Link>
                 <Link
                   href="/about"
@@ -99,8 +99,8 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center text-gray-500 text-sm">
               <p>
-                © {new Date().getFullYear()} Eco Directory. Helping you find
-                sustainable stores across North America.
+                © {new Date().getFullYear()} Eco Directory. Your directory for
+                sustainable businesses across North America.
               </p>
             </div>
           </div>

@@ -4,7 +4,7 @@
     "name": "Bare Market",
     "logo": "/logos/bare-market-toronto.svg",
     "description": "Toronto's zero-waste grocery and refillery. Shop package-free for pantry staples, cleaning supplies, and personal care. Bring your own containers or borrow from the share program.",
-    "categories": ["zero-waste", "bulk-foods", "refillery"],
+    "categories": ["bulk-foods", "refillery"],
     "type": "brick-and-mortar",
     "website": "https://baremarket.ca",
     "contact": {

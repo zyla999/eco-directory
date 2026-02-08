@@ -1,7 +1,7 @@
 /**
  * Store Discovery Agent
  *
- * This script searches for new eco-friendly stores to add to the directory.
+ * This script searches for new eco-friendly businesses to add to the directory.
  * It uses web search APIs to find potential stores and extracts their information.
  *
  * Prerequisites:
@@ -13,14 +13,19 @@
 import { getAllStores, addStore, generateStoreId, formatDate } from "./utils";
 import { Store, StoreCategory } from "../src/types/store";
 
-// Search queries to find eco-friendly stores
+// Search queries to find eco-friendly businesses
 const SEARCH_QUERIES = [
-  "zero waste store",
   "refillery shop",
   "bulk food store sustainable",
   "eco-friendly store",
   "package free shop",
   "sustainable grocery store",
+  "eco-friendly manufacturer",
+  "sustainable brand manufacturer",
+  "wholesale eco-friendly products distributor",
+  "sustainability consulting service",
+  "green cleaning service",
+  "eco logistics provider",
 ];
 
 // Target cities for discovery
@@ -87,13 +92,6 @@ function categorizeStore(description: string): StoreCategory[] {
   if (lowerDesc.includes("refill") || lowerDesc.includes("byoc")) {
     categories.push("refillery");
   }
-  if (
-    lowerDesc.includes("zero waste") ||
-    lowerDesc.includes("zero-waste") ||
-    lowerDesc.includes("package free")
-  ) {
-    categories.push("zero-waste");
-  }
   if (lowerDesc.includes("bulk") || lowerDesc.includes("grocery")) {
     categories.push("bulk-foods");
   }
@@ -110,6 +108,30 @@ function categorizeStore(description: string): StoreCategory[] {
     lowerDesc.includes("consignment")
   ) {
     categories.push("thrift-consignment");
+  }
+  if (
+    lowerDesc.includes("manufacturer") ||
+    lowerDesc.includes("brand") ||
+    lowerDesc.includes("makes") ||
+    lowerDesc.includes("produces")
+  ) {
+    categories.push("manufacturer");
+  }
+  if (
+    lowerDesc.includes("wholesale") ||
+    lowerDesc.includes("distributor") ||
+    lowerDesc.includes("b2b") ||
+    lowerDesc.includes("supplier")
+  ) {
+    categories.push("wholesale");
+  }
+  if (
+    lowerDesc.includes("consulting") ||
+    lowerDesc.includes("service") ||
+    lowerDesc.includes("logistics") ||
+    lowerDesc.includes("cleaning service")
+  ) {
+    categories.push("service-provider");
   }
 
   // Default to sustainable-goods if no specific category matched
@@ -135,10 +157,10 @@ function isExistingStore(stores: Store[], url: string, name: string): boolean {
 }
 
 async function discoverStores() {
-  console.log("Starting store discovery...\n");
+  console.log("Starting business discovery...\n");
 
   const existingStores = getAllStores();
-  console.log(`Existing stores in database: ${existingStores.length}\n`);
+  console.log(`Existing businesses in database: ${existingStores.length}\n`);
 
   let newStoresFound = 0;
 
@@ -186,9 +208,9 @@ async function discoverStores() {
   }
 
   console.log("\n--- Discovery Summary ---");
-  console.log(`New stores found: ${newStoresFound}`);
+  console.log(`New businesses found: ${newStoresFound}`);
   console.log(
-    "\nNote: New stores are added with status 'needs-review' and require manual approval."
+    "\nNote: New businesses are added with status 'needs-review' and require manual approval."
   );
 }
 

@@ -37,11 +37,11 @@ export default function MapPage() {
       <div className="bg-white border-b border-gray-200 px-4 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Store Map</h1>
+            <h1 className="text-xl font-bold text-gray-900">Business Map</h1>
             <p className="text-sm text-gray-500">
               {loading
-                ? "Loading stores..."
-                : `${storesWithCoords.length} stores shown on map`}
+                ? "Loading businesses..."
+                : `${storesWithCoords.length} businesses shown on map`}
             </p>
           </div>
           <Link

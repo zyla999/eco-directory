@@ -5,12 +5,13 @@ import { StoreCategory } from "@/types/store";
 
 const categories: { id: StoreCategory; name: string }[] = [
   { id: "refillery", name: "Refillery" },
-  { id: "zero-waste", name: "Zero Waste" },
   { id: "bulk-foods", name: "Bulk Foods" },
   { id: "sustainable-goods", name: "Sustainable Goods" },
   { id: "thrift-consignment", name: "Thrift & Consignment" },
   { id: "farmers-market", name: "Farmers Market" },
-  { id: "online-only", name: "Online Store" },
+  { id: "manufacturer", name: "Manufacturer / Brand" },
+  { id: "wholesale", name: "Wholesale Distributor" },
+  { id: "service-provider", name: "Service Provider" },
 ];
 
 export default function SubmitPage() {
@@ -61,8 +62,8 @@ export default function SubmitPage() {
             Thank You for Your Submission!
           </h1>
           <p className="text-gray-600 mb-6">
-            We&apos;ve received your store submission and will review it
-            shortly. Once approved, your store will appear in our directory.
+            We&apos;ve received your business submission and will review it
+            shortly. Once approved, your business will appear in our directory.
           </p>
           <a
             href="/"
@@ -78,10 +79,10 @@ export default function SubmitPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">
-        Submit Your Store
+        Submit Your Business
       </h1>
       <p className="text-gray-600 mb-8">
-        Add your eco-friendly store to our directory. All submissions are
+        Add your eco-friendly business to our directory. All submissions are
         reviewed before being published.
       </p>
 
@@ -98,7 +99,7 @@ export default function SubmitPage() {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Store Name *
+                Business Name *
               </label>
               <input
                 type="text"
@@ -127,7 +128,7 @@ export default function SubmitPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                placeholder="Tell us about your store, what makes it eco-friendly, and what products you offer..."
+                placeholder="Tell us about your business, what makes it eco-friendly, and what products or services you offer..."
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
               />
             </div>
@@ -433,7 +434,7 @@ export default function SubmitPage() {
             }
             className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit Store
+            Submit Business
           </button>
         </div>
       </form>

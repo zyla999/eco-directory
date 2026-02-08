@@ -29,7 +29,7 @@ export default function SearchBar({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search stores by name, city, or category..."
+          placeholder="Search businesses by name, city, or category..."
           className={`w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition ${
             large ? "px-6 py-4 text-lg" : "px-4 py-3"
           }`}
