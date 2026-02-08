@@ -1,0 +1,87 @@
+name: Store Discovery & Verification
+
+on:
+  # Run every 15 days
+  schedule:
+    - cron: "0 0 1,15 * *"
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action to perform"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - discover
+          - verify
+          - both
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install ts-node
+        run: npm install -g ts-node typescript @types/node
+
+      - name: Run Discovery Agent
+        if: github.event.inputs.action == 'discover' || github.event.inputs.action == 'both' || github.event_name == 'schedule'
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: npx ts-node scripts/discover.ts
+
+      - name: Run Verification Agent
+        if: github.event.inputs.action == 'verify' || github.event.inputs.action == 'both' || github.event_name == 'schedule'
+        run: npx ts-node scripts/verify.ts
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n $(git status --porcelain data/) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update store data from agent run"
+          title: "[Agent] Store Data Update"
+          body: |
+            ## Automated Store Update
+
+            This PR was created automatically by the Store Discovery & Verification Agent.
+
+            ### Changes
+            - Discovery agent searched for new eco-friendly stores
+            - Verification agent checked existing store websites
+
+            ### Review Checklist
+            - [ ] Review any new stores added (status: needs-review)
+            - [ ] Verify store information is accurate
+            - [ ] Check for any stores marked as needing review
+
+            ---
+            🤖 This PR was generated automatically by GitHub Actions
+          branch: agent/store-update
+          delete-branch: true
+          labels: |
+            automated
+            store-data

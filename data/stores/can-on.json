@@ -1,0 +1,32 @@
+[
+  {
+    "id": "bare-market-toronto",
+    "name": "Bare Market",
+    "description": "Toronto's zero-waste grocery and refillery. Shop package-free for pantry staples, cleaning supplies, and personal care. Bring your own containers or borrow from the share program.",
+    "categories": ["zero-waste", "bulk-foods", "refillery"],
+    "type": "brick-and-mortar",
+    "website": "https://baremarket.ca",
+    "contact": {
+      "email": "hello@baremarket.ca",
+      "phone": "(416) 555-0234"
+    },
+    "location": {
+      "address": "89 Roncesvalles Ave",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "Canada",
+      "postalCode": "M6R 2K8",
+      "coordinates": {
+        "lat": 43.6489,
+        "lng": -79.4512
+      }
+    },
+    "social": {
+      "instagram": "@baremarketto",
+      "facebook": "baremarkettoronto"
+    },
+    "addedDate": "2024-01-19",
+    "lastVerified": "2024-01-19",
+    "status": "active"
+  }
+]

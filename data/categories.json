@@ -1,0 +1,44 @@
+[
+  {
+    "id": "refillery",
+    "name": "Refillery",
+    "description": "Bring-your-own-container refill stores for household and personal care products",
+    "icon": "droplet"
+  },
+  {
+    "id": "zero-waste",
+    "name": "Zero Waste",
+    "description": "Stores focused on zero-waste lifestyle products and package-free shopping",
+    "icon": "leaf"
+  },
+  {
+    "id": "bulk-foods",
+    "name": "Bulk Foods",
+    "description": "Bulk food stores with sustainable practices and minimal packaging",
+    "icon": "wheat"
+  },
+  {
+    "id": "sustainable-goods",
+    "name": "Sustainable Goods",
+    "description": "General eco-friendly and sustainably-made products",
+    "icon": "recycle"
+  },
+  {
+    "id": "thrift-consignment",
+    "name": "Thrift & Consignment",
+    "description": "Secondhand, vintage, and consignment stores",
+    "icon": "shirt"
+  },
+  {
+    "id": "farmers-market",
+    "name": "Farmers Market",
+    "description": "Permanent eco-focused farmers markets and local food hubs",
+    "icon": "store"
+  },
+  {
+    "id": "online-only",
+    "name": "Online Store",
+    "description": "E-commerce stores specializing in eco-friendly products",
+    "icon": "globe"
+  }
+]

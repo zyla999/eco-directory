@@ -1,0 +1,60 @@
+[
+  {
+    "id": "the-refill-shoppe-portland",
+    "name": "The Refill Shoppe",
+    "description": "Portland's original refillery offering a wide selection of household cleaners, personal care products, and laundry supplies. Bring your own containers or purchase reusable ones in-store.",
+    "categories": ["refillery", "zero-waste"],
+    "type": "brick-and-mortar",
+    "website": "https://therefillshoppe.com",
+    "contact": {
+      "email": "hello@therefillshoppe.com",
+      "phone": "(503) 555-0123"
+    },
+    "location": {
+      "address": "1234 SE Division St",
+      "city": "Portland",
+      "state": "OR",
+      "country": "USA",
+      "postalCode": "97202",
+      "coordinates": {
+        "lat": 45.5051,
+        "lng": -122.6345
+      }
+    },
+    "social": {
+      "instagram": "@therefillshoppe",
+      "facebook": "therefillshoppe"
+    },
+    "addedDate": "2024-01-15",
+    "lastVerified": "2024-01-15",
+    "status": "active"
+  },
+  {
+    "id": "green-earth-goods-portland",
+    "name": "Green Earth Goods",
+    "description": "A zero-waste grocery and lifestyle store featuring bulk foods, sustainable home goods, and eco-friendly personal care products. Committed to plastic-free shopping.",
+    "categories": ["zero-waste", "bulk-foods", "sustainable-goods"],
+    "type": "brick-and-mortar",
+    "website": "https://greenearthgoods.com",
+    "contact": {
+      "email": "info@greenearthgoods.com"
+    },
+    "location": {
+      "address": "567 NW 23rd Ave",
+      "city": "Portland",
+      "state": "OR",
+      "country": "USA",
+      "postalCode": "97210",
+      "coordinates": {
+        "lat": 45.5298,
+        "lng": -122.6986
+      }
+    },
+    "social": {
+      "instagram": "@greenearthgoods"
+    },
+    "addedDate": "2024-01-16",
+    "lastVerified": "2024-01-16",
+    "status": "active"
+  }
+]

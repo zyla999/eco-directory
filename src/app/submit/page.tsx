@@ -1,0 +1,442 @@
+"use client";
+
+import { useState } from "react";
+import { StoreCategory } from "@/types/store";
+
+const categories: { id: StoreCategory; name: string }[] = [
+  { id: "refillery", name: "Refillery" },
+  { id: "zero-waste", name: "Zero Waste" },
+  { id: "bulk-foods", name: "Bulk Foods" },
+  { id: "sustainable-goods", name: "Sustainable Goods" },
+  { id: "thrift-consignment", name: "Thrift & Consignment" },
+  { id: "farmers-market", name: "Farmers Market" },
+  { id: "online-only", name: "Online Store" },
+];
+
+export default function SubmitPage() {
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    categories: [] as StoreCategory[],
+    type: "brick-and-mortar",
+    website: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "USA",
+    postalCode: "",
+    instagram: "",
+    facebook: "",
+  });
+
+  const handleCategoryChange = (categoryId: StoreCategory) => {
+    setFormData((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(categoryId)
+        ? prev.categories.filter((c) => c !== categoryId)
+        : [...prev.categories, categoryId],
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // In a real implementation, this would call an API endpoint
+    // that creates a GitHub PR with the new store data
+    console.log("Submitted store data:", formData);
+
+    // For now, just show a success message
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-green-50 rounded-lg p-8 text-center">
+          <div className="text-4xl mb-4">🎉</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Thank You for Your Submission!
+          </h1>
+          <p className="text-gray-600 mb-6">
+            We&apos;ve received your store submission and will review it
+            shortly. Once approved, your store will appear in our directory.
+          </p>
+          <a
+            href="/"
+            className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition"
+          >
+            Return Home
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        Submit Your Store
+      </h1>
+      <p className="text-gray-600 mb-8">
+        Add your eco-friendly store to our directory. All submissions are
+        reviewed before being published.
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Basic Info */}
+        <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Basic Information
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Store Name *
+              </label>
+              <input
+                type="text"
+                id="name"
+                required
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Description *
+              </label>
+              <textarea
+                id="description"
+                required
+                rows={4}
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                placeholder="Tell us about your store, what makes it eco-friendly, and what products you offer..."
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Categories *
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {categories.map((cat) => (
+                  <label
+                    key={cat.id}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.categories.includes(cat.id)}
+                      onChange={() => handleCategoryChange(cat.id)}
+                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    />
+                    <span className="text-sm text-gray-700">{cat.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Store Type *
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="brick-and-mortar"
+                    checked={formData.type === "brick-and-mortar"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, type: e.target.value })
+                    }
+                    className="border-gray-300 text-green-600 focus:ring-green-500"
+                  />
+                  <span className="text-sm text-gray-700">Physical Store</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="online"
+                    checked={formData.type === "online"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, type: e.target.value })
+                    }
+                    className="border-gray-300 text-green-600 focus:ring-green-500"
+                  />
+                  <span className="text-sm text-gray-700">Online Only</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="both"
+                    checked={formData.type === "both"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, type: e.target.value })
+                    }
+                    className="border-gray-300 text-green-600 focus:ring-green-500"
+                  />
+                  <span className="text-sm text-gray-700">Both</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Info */}
+        <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Contact Information
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="website"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Website
+              </label>
+              <input
+                type="url"
+                id="website"
+                value={formData.website}
+                onChange={(e) =>
+                  setFormData({ ...formData, website: e.target.value })
+                }
+                placeholder="https://yourstore.com"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Location */}
+        {formData.type !== "online" && (
+          <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Location
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Street Address
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="city"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    required={formData.type !== "online"}
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="state"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    State/Province *
+                  </label>
+                  <input
+                    type="text"
+                    id="state"
+                    required={formData.type !== "online"}
+                    value={formData.state}
+                    onChange={(e) =>
+                      setFormData({ ...formData, state: e.target.value })
+                    }
+                    placeholder="e.g., CA, NY, ON"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="country"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Country *
+                  </label>
+                  <select
+                    id="country"
+                    value={formData.country}
+                    onChange={(e) =>
+                      setFormData({ ...formData, country: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                  >
+                    <option value="USA">United States</option>
+                    <option value="Canada">Canada</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="postalCode"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Postal Code
+                  </label>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    value={formData.postalCode}
+                    onChange={(e) =>
+                      setFormData({ ...formData, postalCode: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Social Media */}
+        <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Social Media
+          </h2>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="instagram"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Instagram
+              </label>
+              <input
+                type="text"
+                id="instagram"
+                value={formData.instagram}
+                onChange={(e) =>
+                  setFormData({ ...formData, instagram: e.target.value })
+                }
+                placeholder="@yourstore"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="facebook"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Facebook
+              </label>
+              <input
+                type="text"
+                id="facebook"
+                value={formData.facebook}
+                onChange={(e) =>
+                  setFormData({ ...formData, facebook: e.target.value })
+                }
+                placeholder="yourstore"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={
+              !formData.name ||
+              !formData.description ||
+              formData.categories.length === 0
+            }
+            className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Submit Store
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
