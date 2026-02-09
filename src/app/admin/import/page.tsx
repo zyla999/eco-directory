@@ -31,18 +31,31 @@ interface ImportResult {
   message?: string;
 }
 
-async function geocode(
-  address: string,
-  city: string,
-  state: string,
-  country: string
-): Promise<{ lat: number; lng: number } | null> {
-  const parts = [address, city, state, country].filter(Boolean).join(", ");
-  if (!parts) return null;
+const PROVINCE_MAP: Record<string, string> = {
+  AB: "Alberta", BC: "British Columbia", SK: "Saskatchewan",
+  MB: "Manitoba", ON: "Ontario", QC: "Quebec", NB: "New Brunswick",
+  NS: "Nova Scotia", PE: "Prince Edward Island", NL: "Newfoundland and Labrador",
+  YT: "Yukon", NT: "Northwest Territories", NU: "Nunavut",
+};
 
+function normalizeForGeocode(address: string, state: string, country: string) {
+  // Expand Canadian province abbreviations (Nominatim prefers full names)
+  const expandedState = country === "Canada" ? (PROVINCE_MAP[state.toUpperCase()] || state) : state;
+
+  // Remove unit/suite/apt numbers
+  let cleaned = address.replace(/\b(unit|suite|apt|ste|#)\s*\S+/gi, "").trim();
+  // Remove leading unit prefix like "103 2115..." → "2115..."
+  cleaned = cleaned.replace(/^\d+\s+(?=\d)/, "");
+  // Remove ordinal suffixes: "9th" → "9", "4th" → "4" (Nominatim prefers "9 Avenue" over "9th Avenue")
+  cleaned = cleaned.replace(/(\d+)(st|nd|rd|th)\b/gi, "$1");
+
+  return { cleanedAddress: cleaned, expandedState };
+}
+
+async function geocodeQuery(query: string): Promise<{ lat: number; lng: number } | null> {
   try {
     const url = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
-      q: parts,
+      q: query,
       format: "json",
       limit: "1",
     })}`;
@@ -56,6 +69,38 @@ async function geocode(
   } catch {
     return null;
   }
+}
+
+async function geocode(
+  address: string,
+  city: string,
+  state: string,
+  country: string
+): Promise<{ lat: number; lng: number } | null> {
+  if (!city && !state) return null;
+
+  const { cleanedAddress, expandedState } = normalizeForGeocode(address, state, country);
+
+  // Try progressively simpler queries, with 1.1s delay between each for rate limiting
+  const queries = [
+    [address, city, expandedState, country].filter(Boolean).join(", "),
+    cleanedAddress !== address
+      ? [cleanedAddress, city, expandedState, country].filter(Boolean).join(", ")
+      : null,
+    [city, expandedState, country].filter(Boolean).join(", "),
+  ].filter(Boolean) as string[];
+
+  // Deduplicate queries
+  const seen = new Set<string>();
+  const unique = queries.filter((q) => { if (seen.has(q)) return false; seen.add(q); return true; });
+
+  for (const query of unique) {
+    const result = await geocodeQuery(query);
+    if (result) return result;
+    await sleep(1100);
+  }
+
+  return null;
 }
 
 function sleep(ms: number) {
@@ -175,8 +220,6 @@ export default function ImportPage() {
           lng = coords.lng;
           geocoded = true;
         }
-        // Respect Nominatim 1 req/sec rate limit
-        await sleep(1100);
       }
 
       const store = {
