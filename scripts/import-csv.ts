@@ -86,6 +86,7 @@ async function main() {
       facebook: row.facebook?.trim() || null,
       twitter: row.twitter?.trim() || null,
       tiktok: row.tiktok?.trim() || null,
+      pinterest: row.pinterest?.trim() || null,
       address: row.address?.trim() || null,
       city: city || null,
       state: row.state?.trim() || null,

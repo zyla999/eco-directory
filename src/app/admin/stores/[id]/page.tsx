@@ -44,6 +44,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     facebook: "",
     twitter: "",
     tiktok: "",
+    pinterest: "",
     address: "",
     city: "",
     state: "",
@@ -74,6 +75,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           facebook: data.facebook || "",
           twitter: data.twitter || "",
           tiktok: data.tiktok || "",
+          pinterest: data.pinterest || "",
           address: data.address || "",
           city: data.city || "",
           state: data.state || "",
@@ -119,6 +121,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
       facebook: form.facebook || null,
       twitter: form.twitter || null,
       tiktok: form.tiktok || null,
+      pinterest: form.pinterest || null,
       address: form.address || null,
       city: form.city,
       state: form.state,
@@ -324,6 +327,10 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">TikTok</label>
             <input type="text" value={form.tiktok} onChange={(e) => setForm({ ...form, tiktok: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Pinterest</label>
+            <input type="text" value={form.pinterest} onChange={(e) => setForm({ ...form, pinterest: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
         </div>
 

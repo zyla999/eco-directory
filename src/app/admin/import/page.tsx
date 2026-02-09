@@ -155,7 +155,7 @@ function parseCategories(raw: string): string[] {
 const EXPECTED_HEADERS = [
   "name", "description", "categories", "type", "website", "email", "phone",
   "instagram", "facebook", "twitter", "tiktok",
-  "address", "city", "state", "country", "postal_code", "offers_wholesale",
+  "address", "city", "state", "country", "postal_code", "offers_wholesale", "pinterest",
 ];
 
 export default function ImportPage() {
@@ -236,6 +236,7 @@ export default function ImportPage() {
         facebook: row.facebook?.trim() || null,
         twitter: row.twitter?.trim() || null,
         tiktok: row.tiktok?.trim() || null,
+        pinterest: row.pinterest?.trim() || null,
         address: address || null,
         city: city || null,
         state: state || null,

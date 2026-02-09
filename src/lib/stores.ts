@@ -25,6 +25,7 @@ function transformStore(row: any): Store {
     facebook: row.facebook ?? undefined,
     twitter: row.twitter ?? undefined,
     tiktok: row.tiktok ?? undefined,
+    pinterest: row.pinterest ?? undefined,
     location: {
       address: row.address ?? undefined,
       city: row.city,

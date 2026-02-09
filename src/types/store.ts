@@ -66,6 +66,7 @@ export interface Store {
   facebook?: string;
   twitter?: string;
   tiktok?: string;
+  pinterest?: string;
   location: StoreLocation;
   featured?: boolean;
   sponsored?: boolean;
