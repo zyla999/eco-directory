@@ -258,19 +258,19 @@ export default function NewStorePage() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
-            <input type="text" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            <input type="text" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
-            <input type="text" value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            <input type="text" value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="Full URL or page name" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Twitter</label>
-            <input type="text" value={form.twitter} onChange={(e) => setForm({ ...form, twitter: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Twitter / X</label>
+            <input type="text" value={form.twitter} onChange={(e) => setForm({ ...form, twitter: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">TikTok</label>
-            <input type="text" value={form.tiktok} onChange={(e) => setForm({ ...form, tiktok: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            <input type="text" value={form.tiktok} onChange={(e) => setForm({ ...form, tiktok: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
         </div>
 

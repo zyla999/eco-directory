@@ -8,6 +8,11 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 
 export const revalidate = 3600;
 
+function socialUrl(value: string, base: string): string {
+  if (value.startsWith("http")) return value;
+  return `${base}/${value.replace("@", "")}`;
+}
+
 interface StorePageProps {
   params: Promise<{ id: string }>;
 }
@@ -205,7 +210,7 @@ export default async function StorePage({ params }: StorePageProps) {
           </AnimateOnScroll>
 
           {/* Social Links */}
-          {(store.instagram || store.facebook || store.twitter) && (
+          {(store.instagram || store.facebook || store.twitter || store.tiktok) && (
             <AnimateOnScroll animation="slide-in-right">
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">
@@ -214,10 +219,7 @@ export default async function StorePage({ params }: StorePageProps) {
                 <div className="flex gap-4">
                   {store.instagram && (
                     <a
-                      href={`https://instagram.com/${store.instagram.replace(
-                        "@",
-                        ""
-                      )}`}
+                      href={socialUrl(store.instagram, "https://instagram.com")}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-pink-600"
@@ -234,7 +236,7 @@ export default async function StorePage({ params }: StorePageProps) {
                   )}
                   {store.facebook && (
                     <a
-                      href={`https://facebook.com/${store.facebook}`}
+                      href={socialUrl(store.facebook, "https://facebook.com")}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-blue-600"
@@ -251,10 +253,7 @@ export default async function StorePage({ params }: StorePageProps) {
                   )}
                   {store.twitter && (
                     <a
-                      href={`https://twitter.com/${store.twitter.replace(
-                        "@",
-                        ""
-                      )}`}
+                      href={socialUrl(store.twitter, "https://twitter.com")}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-sky-500"
@@ -266,6 +265,23 @@ export default async function StorePage({ params }: StorePageProps) {
                         viewBox="0 0 24 24"
                       >
                         <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                      </svg>
+                    </a>
+                  )}
+                  {store.tiktok && (
+                    <a
+                      href={socialUrl(store.tiktok, "https://tiktok.com")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-gray-900"
+                    >
+                      <span className="sr-only">TikTok</span>
+                      <svg
+                        className="w-6 h-6"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46V13.2a8.16 8.16 0 005.58 2.17V12a4.85 4.85 0 01-5.58-2.17V2h3.45a4.83 4.83 0 002.13 4.69z" />
                       </svg>
                     </a>
                   )}
