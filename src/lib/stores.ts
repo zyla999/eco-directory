@@ -46,6 +46,7 @@ function transformStore(row: any): Store {
     hours: row.hours ?? undefined,
     priceLevel: row.price_level ?? undefined,
     features: row.features ?? undefined,
+    offersWholesale: row.offers_wholesale ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at ?? undefined,
     lastVerifiedAt: row.last_verified_at,

@@ -87,6 +87,11 @@ export default async function StorePage({ params }: StorePageProps) {
                       {category.replace("-", " ")}
                     </Link>
                   ))}
+                  {store.offersWholesale && (
+                    <span className="px-3 py-1 text-sm font-medium rounded-full bg-amber-100 text-amber-800">
+                      Wholesale Available
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

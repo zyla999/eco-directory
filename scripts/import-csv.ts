@@ -91,6 +91,7 @@ async function main() {
       state: row.state?.trim() || null,
       country: row.country?.trim() || "USA",
       postal_code: row.postal_code?.trim() || null,
+      offers_wholesale: row.offers_wholesale?.toLowerCase() === "true" || row.offers_wholesale === "1",
       created_at: now,
       last_verified_at: now,
       source: "csv-import",

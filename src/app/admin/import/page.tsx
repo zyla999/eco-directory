@@ -110,7 +110,7 @@ function parseCategories(raw: string): string[] {
 const EXPECTED_HEADERS = [
   "name", "description", "categories", "type", "website", "email", "phone",
   "instagram", "facebook", "twitter", "tiktok",
-  "address", "city", "state", "country", "postal_code",
+  "address", "city", "state", "country", "postal_code", "offers_wholesale",
 ];
 
 export default function ImportPage() {
@@ -200,6 +200,7 @@ export default function ImportPage() {
         postal_code: row.postal_code?.trim() || null,
         lat,
         lng,
+        offers_wholesale: row.offers_wholesale?.toLowerCase() === "true" || row.offers_wholesale === "1",
         created_at: now,
         last_verified_at: now,
         source: "csv-import",

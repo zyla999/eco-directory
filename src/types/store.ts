@@ -76,6 +76,7 @@ export interface Store {
   hours?: string;
   priceLevel?: number;
   features?: string[];
+  offersWholesale?: boolean;
   createdAt: string;
   updatedAt?: string;
   lastVerifiedAt: string;

@@ -41,6 +41,7 @@ create table if not exists stores (
   hours text,
   price_level integer,
   features text[] default '{}',
+  offers_wholesale boolean default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   last_verified_at timestamptz not null default now(),

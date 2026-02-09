@@ -53,6 +53,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     lng: "",
     logo: "",
     featured: false,
+    offers_wholesale: false,
     review_notes: "",
   });
 
@@ -82,6 +83,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           lng: data.lng?.toString() || "",
           logo: data.logo || "",
           featured: data.featured || false,
+          offers_wholesale: data.offers_wholesale || false,
           review_notes: data.review_notes || "",
         });
       }
@@ -126,6 +128,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
       lng: form.lng ? parseFloat(form.lng) : null,
       logo: form.logo || null,
       featured: form.featured,
+      offers_wholesale: form.offers_wholesale,
       review_notes: form.review_notes || null,
     }).eq("id", id);
 
@@ -220,8 +223,8 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           </div>
         </div>
 
-        {/* Status & Featured */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Status & Flags */}
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
@@ -239,6 +242,17 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
                 className="rounded border-gray-300 text-green-600"
               />
               <span className="text-sm text-gray-700">Featured</span>
+            </label>
+          </div>
+          <div className="flex items-end pb-1">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.offers_wholesale}
+                onChange={(e) => setForm({ ...form, offers_wholesale: e.target.checked })}
+                className="rounded border-gray-300 text-amber-600"
+              />
+              <span className="text-sm text-gray-700">Offers Wholesale</span>
             </label>
           </div>
         </div>

@@ -50,6 +50,11 @@ export default function StoreCard({ store }: StoreCardProps) {
               {category.replace("-", " ")}
             </span>
           ))}
+          {store.offersWholesale && (
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
+              Wholesale Available
+            </span>
+          )}
         </div>
 
         {store.website && (

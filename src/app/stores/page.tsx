@@ -11,7 +11,7 @@ import {
 export const revalidate = 3600;
 
 interface StoresPageProps {
-  searchParams: Promise<{ q?: string; category?: string; state?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; state?: string; wholesale?: string }>;
 }
 
 export default async function StoresPage({ searchParams }: StoresPageProps) {
@@ -19,6 +19,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const query = params.q || "";
   const categoryFilter = params.category || "";
   const stateFilter = params.state || "";
+  const wholesaleFilter = params.wholesale === "true";
 
   let stores = query ? await searchStores(query) : await getAllStores();
 
@@ -32,6 +33,10 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
     stores = stores.filter(
       (s) => s.location.state.toLowerCase() === stateFilter.toLowerCase()
     );
+  }
+
+  if (wholesaleFilter) {
+    stores = stores.filter((s) => s.offersWholesale);
   }
 
   const categories = await getCategories();
@@ -83,6 +88,35 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
                     </a>
                   ))}
                 </div>
+              </div>
+
+              {/* Wholesale Filter */}
+              <div className="mb-6">
+                <a
+                  href={`/stores?${[
+                    categoryFilter ? `category=${categoryFilter}` : "",
+                    stateFilter ? `state=${stateFilter}` : "",
+                    !wholesaleFilter ? "wholesale=true" : "",
+                  ].filter(Boolean).join("&")}`}
+                  className={`flex items-center gap-2 text-sm ${
+                    wholesaleFilter
+                      ? "text-amber-700 font-medium"
+                      : "text-gray-600 hover:text-amber-700"
+                  }`}
+                >
+                  <span className={`inline-block w-4 h-4 rounded border ${
+                    wholesaleFilter
+                      ? "bg-amber-500 border-amber-500"
+                      : "border-gray-300"
+                  }`}>
+                    {wholesaleFilter && (
+                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </span>
+                  Wholesale Available
+                </a>
               </div>
 
               {/* State Filter */}
