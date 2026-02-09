@@ -211,11 +211,19 @@ export default function NewStorePage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
           {form.logo && (
-            <div className="mb-2">
+            <div className="mb-2 flex items-center gap-3">
               <img src={form.logo} alt="Logo preview" className="w-16 h-16 object-contain rounded border border-gray-200" />
+              <button
+                type="button"
+                onClick={() => setForm((prev) => ({ ...prev, logo: "" }))}
+                className="text-xs text-red-600 hover:text-red-700"
+              >
+                Remove logo
+              </button>
             </div>
           )}
           <input
+            key={form.logo}
             type="file"
             accept="image/svg+xml,image/png,image/jpeg,image/webp"
             onChange={async (e) => {
@@ -223,14 +231,15 @@ export default function NewStorePage() {
               if (!file) return;
               setError("");
               const tempName = `${Date.now()}-${file.name.replace(/[^a-z0-9._-]/gi, "")}`;
-              const { error: uploadErr } = await createClient().storage
+              const supabase = createClient();
+              const { error: uploadErr } = await supabase.storage
                 .from("logos")
                 .upload(tempName, file, { contentType: file.type, upsert: true });
               if (uploadErr) {
                 setError(`Logo upload failed: ${uploadErr.message}`);
                 return;
               }
-              const { data: { publicUrl } } = createClient().storage
+              const { data: { publicUrl } } = supabase.storage
                 .from("logos")
                 .getPublicUrl(tempName);
               setForm((prev) => ({ ...prev, logo: publicUrl }));
