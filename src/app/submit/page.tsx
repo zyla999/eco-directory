@@ -6,7 +6,7 @@ import { StoreCategory } from "@/types/store";
 const categories: { id: StoreCategory; name: string }[] = [
   { id: "refillery", name: "Refillery" },
   { id: "bulk-foods", name: "Bulk Foods" },
-  { id: "sustainable-goods", name: "Sustainable Goods" },
+  { id: "zero-waste", name: "Zero Waste" },
   { id: "thrift-consignment", name: "Thrift & Consignment" },
   { id: "farmers-market", name: "Farmers Market" },
   { id: "manufacturer", name: "Manufacturer / Brand" },
@@ -16,6 +16,8 @@ const categories: { id: StoreCategory; name: string }[] = [
 
 export default function SubmitPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -44,13 +46,29 @@ export default function SubmitPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    // In a real implementation, this would call an API endpoint
-    // that creates a GitHub PR with the new store data
-    console.log("Submitted store data:", formData);
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    // For now, just show a success message
-    setSubmitted(true);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -85,6 +103,12 @@ export default function SubmitPage() {
         Add your eco-friendly business to our directory. All submissions are
         reviewed before being published.
       </p>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Info */}
@@ -428,13 +452,14 @@ export default function SubmitPage() {
           <button
             type="submit"
             disabled={
+              loading ||
               !formData.name ||
               !formData.description ||
               formData.categories.length === 0
             }
             className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit Business
+            {loading ? "Submitting..." : "Submit Business"}
           </button>
         </div>
       </form>

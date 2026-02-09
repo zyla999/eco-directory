@@ -100,7 +100,7 @@ function categorizeStore(description: string): StoreCategory[] {
     lowerDesc.includes("eco") ||
     lowerDesc.includes("green")
   ) {
-    categories.push("sustainable-goods");
+    categories.push("zero-waste");
   }
   if (
     lowerDesc.includes("thrift") ||
@@ -134,9 +134,9 @@ function categorizeStore(description: string): StoreCategory[] {
     categories.push("service-provider");
   }
 
-  // Default to sustainable-goods if no specific category matched
+  // Default to zero-waste if no specific category matched
   if (categories.length === 0) {
-    categories.push("sustainable-goods");
+    categories.push("zero-waste");
   }
 
   return categories;
@@ -154,6 +154,10 @@ function isExistingStore(stores: Store[], url: string, name: string): boolean {
 
     return storeUrl === normalizedUrl || storeName === normalizedName;
   });
+}
+
+function countryToRegionPrefix(country: "USA" | "Canada"): string {
+  return country === "Canada" ? "can" : "usa";
 }
 
 async function discoverStores() {
@@ -189,9 +193,10 @@ async function discoverStores() {
             city: location.city,
             state: location.state,
             country: location.country,
+            region: `${countryToRegionPrefix(location.country)}-${location.state.toLowerCase()}`,
           },
-          addedDate: formatDate(),
-          lastVerified: formatDate(),
+          createdAt: formatDate(),
+          lastVerifiedAt: formatDate(),
           status: "needs-review", // New stores need review before going live
         };
 

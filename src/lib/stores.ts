@@ -1,123 +1,251 @@
-import fs from "fs";
-import path from "path";
+import { cache } from "react";
 import { Store, Category, Sponsor, AdPlacement } from "@/types/store";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 
-const dataDir = path.join(process.cwd(), "data");
-const storesDir = path.join(dataDir, "stores");
+// ── Row → TypeScript transformers ──
 
-export function getAllStores(): Store[] {
-  const storeFiles = fs.readdirSync(storesDir).filter((f) => f.endsWith(".json"));
-  const allStores: Store[] = [];
-
-  for (const file of storeFiles) {
-    const filePath = path.join(storesDir, file);
-    const content = fs.readFileSync(filePath, "utf-8");
-    const stores: Store[] = JSON.parse(content);
-    allStores.push(...stores);
-  }
-
-  return allStores.filter((store) => store.status === "active");
-}
-
-export function getStoreById(id: string): Store | undefined {
-  const allStores = getAllStores();
-  return allStores.find((store) => store.id === id);
-}
-
-export function getStoresByCategory(category: string): Store[] {
-  const allStores = getAllStores();
-  return allStores.filter((store) => store.categories.includes(category as any));
-}
-
-export function getStoresByState(state: string): Store[] {
-  const allStores = getAllStores();
-  return allStores.filter(
-    (store) => store.location.state.toLowerCase() === state.toLowerCase()
-  );
-}
-
-export function getStoresByCity(city: string): Store[] {
-  const allStores = getAllStores();
-  return allStores.filter(
-    (store) => store.location.city.toLowerCase() === city.toLowerCase()
-  );
-}
-
-export function getStoresByCountry(country: "USA" | "Canada"): Store[] {
-  const allStores = getAllStores();
-  return allStores.filter((store) => store.location.country === country);
-}
-
-export function searchStores(query: string): Store[] {
-  const allStores = getAllStores();
-  const lowerQuery = query.toLowerCase();
-
-  return allStores.filter(
-    (store) =>
-      store.name.toLowerCase().includes(lowerQuery) ||
-      store.description.toLowerCase().includes(lowerQuery) ||
-      store.location.city.toLowerCase().includes(lowerQuery) ||
-      store.location.state.toLowerCase().includes(lowerQuery)
-  );
-}
-
-export function getCategories(): Category[] {
-  const filePath = path.join(dataDir, "categories.json");
-  const content = fs.readFileSync(filePath, "utf-8");
-  return JSON.parse(content);
-}
-
-export function getUniqueStates(): string[] {
-  const allStores = getAllStores();
-  const states = new Set(allStores.map((store) => store.location.state));
-  return Array.from(states).sort();
-}
-
-export function getUniqueCities(): string[] {
-  const allStores = getAllStores();
-  const cities = new Set(allStores.map((store) => store.location.city));
-  return Array.from(cities).sort();
-}
-
-export function getStoreStats() {
-  const allStores = getAllStores();
-  const categories = getCategories();
-
+function transformStore(row: any): Store {
   return {
-    totalStores: allStores.length,
-    totalCategories: categories.length,
-    totalStates: getUniqueStates().length,
-    totalCities: getUniqueCities().length,
-    byCountry: {
-      USA: allStores.filter((s) => s.location.country === "USA").length,
-      Canada: allStores.filter((s) => s.location.country === "Canada").length,
+    id: row.id,
+    name: row.name,
+    description: row.description ?? undefined,
+    shortDescription: row.short_description ?? undefined,
+    categories: row.categories || [],
+    tags: row.tags ?? undefined,
+    type: row.type,
+    logo: row.logo ?? undefined,
+    logoAlt: row.logo_alt ?? undefined,
+    image: row.image_src
+      ? { src: row.image_src, alt: row.image_alt, credit: row.image_credit }
+      : undefined,
+    website: row.website ?? undefined,
+    email: row.email ?? undefined,
+    phone: row.phone ?? undefined,
+    instagram: row.instagram ?? undefined,
+    facebook: row.facebook ?? undefined,
+    twitter: row.twitter ?? undefined,
+    tiktok: row.tiktok ?? undefined,
+    location: {
+      address: row.address ?? undefined,
+      city: row.city,
+      state: row.state,
+      country: row.country,
+      region: row.region ?? undefined,
+      postalCode: row.postal_code ?? undefined,
+      coordinates:
+        row.lat != null && row.lng != null
+          ? { lat: row.lat, lng: row.lng }
+          : undefined,
     },
+    featured: row.featured ?? undefined,
+    sponsored: row.sponsored ?? undefined,
+    sponsorId: row.sponsor_id ?? undefined,
+    priority: row.priority ?? undefined,
+    shipsTo: row.ships_to ?? undefined,
+    serviceArea: row.service_area ?? undefined,
+    hours: row.hours ?? undefined,
+    priceLevel: row.price_level ?? undefined,
+    features: row.features ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at ?? undefined,
+    lastVerifiedAt: row.last_verified_at,
+    source: row.source ?? undefined,
+    status: row.status,
+    reviewNotes: row.review_notes ?? undefined,
   };
 }
 
+function transformSponsor(row: any): Sponsor {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    logo: row.logo,
+    website: row.website,
+    cta: row.cta,
+    placement: row.placement || [],
+    targetCategories: row.target_categories ?? undefined,
+    targetStates: row.target_states ?? undefined,
+    startDate: row.start_date,
+    endDate: row.end_date,
+    isActive: row.is_active,
+  };
+}
+
+// ── Store queries ──
+
+export const getAllStores = cache(async (): Promise<Store[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .order("name");
+
+  if (error) {
+    console.error("getAllStores error:", error);
+    return [];
+  }
+  return (data || []).map(transformStore);
+});
+
+export const getStoreById = cache(async (id: string): Promise<Store | undefined> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) return undefined;
+  return transformStore(data);
+});
+
+export const getStoresByCategory = cache(async (category: string): Promise<Store[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .contains("categories", [category])
+    .order("name");
+
+  if (error) {
+    console.error("getStoresByCategory error:", error);
+    return [];
+  }
+  return (data || []).map(transformStore);
+});
+
+export const getStoresByState = cache(async (state: string): Promise<Store[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .ilike("state", state)
+    .order("name");
+
+  if (error) {
+    console.error("getStoresByState error:", error);
+    return [];
+  }
+  return (data || []).map(transformStore);
+});
+
+export const getStoresByCity = cache(async (city: string): Promise<Store[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .ilike("city", city)
+    .order("name");
+
+  if (error) return [];
+  return (data || []).map(transformStore);
+});
+
+export const getStoresByCountry = cache(async (country: "USA" | "Canada"): Promise<Store[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .eq("country", country)
+    .order("name");
+
+  if (error) return [];
+  return (data || []).map(transformStore);
+});
+
+export const searchStores = cache(async (query: string): Promise<Store[]> => {
+  const pattern = `%${query}%`;
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .or(`name.ilike.${pattern},description.ilike.${pattern},city.ilike.${pattern},state.ilike.${pattern}`)
+    .order("name");
+
+  if (error) {
+    console.error("searchStores error:", error);
+    return [];
+  }
+  return (data || []).map(transformStore);
+});
+
+// ── Category queries ──
+
+export const getCategories = cache(async (): Promise<Category[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("categories")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    console.error("getCategories error:", error);
+    return [];
+  }
+  return (data || []) as Category[];
+});
+
+// ── Derived helpers ──
+
+export const getUniqueStates = cache(async (): Promise<string[]> => {
+  const stores = await getAllStores();
+  const states = new Set(stores.map((s) => s.location.state));
+  return Array.from(states).sort();
+});
+
+export const getUniqueCities = cache(async (): Promise<string[]> => {
+  const stores = await getAllStores();
+  const cities = new Set(stores.map((s) => s.location.city));
+  return Array.from(cities).sort();
+});
+
+export const getStoreStats = cache(async () => {
+  const stores = await getAllStores();
+  const categories = await getCategories();
+
+  return {
+    totalStores: stores.length,
+    totalCategories: categories.length,
+    totalStates: new Set(stores.map((s) => s.location.state)).size,
+    totalCities: new Set(stores.map((s) => s.location.city)).size,
+    byCountry: {
+      USA: stores.filter((s) => s.location.country === "USA").length,
+      Canada: stores.filter((s) => s.location.country === "Canada").length,
+    },
+  };
+});
+
 // ── Sponsor helpers ──
 
-export function getSponsors(): Sponsor[] {
-  const filePath = path.join(dataDir, "sponsors.json");
-  const content = fs.readFileSync(filePath, "utf-8");
-  const sponsors: Sponsor[] = JSON.parse(content);
-  return sponsors.filter((s) => s.isActive);
+export const getSponsors = cache(async (): Promise<Sponsor[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("sponsors")
+    .select("*")
+    .eq("is_active", true);
+
+  if (error) {
+    console.error("getSponsors error:", error);
+    return [];
+  }
+  return (data || []).map(transformSponsor);
+});
+
+export async function getSponsorsByPlacement(placement: AdPlacement): Promise<Sponsor[]> {
+  const sponsors = await getSponsors();
+  return sponsors.filter((s) => s.placement.includes(placement));
 }
 
-export function getSponsorsByPlacement(placement: AdPlacement): Sponsor[] {
-  return getSponsors().filter((s) => s.placement.includes(placement));
-}
-
-export function getSponsorForCategory(category: string): Sponsor | undefined {
-  return getSponsors().find(
+export async function getSponsorForCategory(category: string): Promise<Sponsor | undefined> {
+  const sponsors = await getSponsors();
+  return sponsors.find(
     (s) =>
       s.placement.includes("category-sidebar") &&
       (!s.targetCategories || s.targetCategories.includes(category as any))
   );
 }
 
-export function getSponsorForState(state: string): Sponsor | undefined {
-  return getSponsors().find(
+export async function getSponsorForState(state: string): Promise<Sponsor | undefined> {
+  const sponsors = await getSponsors();
+  return sponsors.find(
     (s) =>
       s.placement.includes("state-banner") &&
       (!s.targetStates || s.targetStates.includes(state))
@@ -158,8 +286,8 @@ export interface StateInfo {
   storeCount: number;
 }
 
-export function getStatesWithStores(): StateInfo[] {
-  const allStores = getAllStores();
+export const getStatesWithStores = cache(async (): Promise<StateInfo[]> => {
+  const allStores = await getAllStores();
   const stateMap = new Map<string, { country: "USA" | "Canada"; count: number }>();
 
   for (const store of allStores) {
@@ -172,20 +300,21 @@ export function getStatesWithStores(): StateInfo[] {
     }
   }
 
-  return Array.from(stateMap.entries()).map(([stateCode, info]) => {
-    const prefix = countryForState(stateCode);
-    return {
-      slug: `${prefix}-${stateCode.toLowerCase()}`,
-      stateCode,
-      stateName: STATE_NAMES[stateCode] || stateCode,
-      country: info.country,
-      storeCount: info.count,
-    };
-  }).sort((a, b) => a.stateName.localeCompare(b.stateName));
-}
+  return Array.from(stateMap.entries())
+    .map(([stateCode, info]) => {
+      const prefix = countryForState(stateCode);
+      return {
+        slug: `${prefix}-${stateCode.toLowerCase()}`,
+        stateCode,
+        stateName: STATE_NAMES[stateCode] || stateCode,
+        country: info.country,
+        storeCount: info.count,
+      };
+    })
+    .sort((a, b) => a.stateName.localeCompare(b.stateName));
+});
 
-export function getStoresByStateSlug(slug: string): Store[] {
-  // slug format: "usa-ca", "can-on"
+export async function getStoresByStateSlug(slug: string): Promise<Store[]> {
   const parts = slug.split("-");
   if (parts.length < 2) return [];
   const stateCode = parts.slice(1).join("-").toUpperCase();

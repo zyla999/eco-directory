@@ -4,24 +4,21 @@
     "name": "EarthHero",
     "logo": "/logos/earthhero-online.svg",
     "description": "Online marketplace for sustainable products across all categories. Curated selection of eco-friendly brands with carbon-neutral shipping and plastic-free packaging.",
-    "categories": ["sustainable-goods"],
+    "categories": ["zero-waste"],
     "type": "online",
     "website": "https://earthhero.com",
-    "contact": {
-      "email": "support@earthhero.com"
-    },
+    "email": "support@earthhero.com",
     "location": {
       "city": "Boulder",
       "state": "CO",
-      "country": "USA"
+      "country": "USA",
+      "region": "usa-co"
     },
-    "social": {
-      "instagram": "@earthhero",
-      "facebook": "earthhero",
-      "twitter": "@earthhero"
-    },
-    "addedDate": "2024-01-20",
-    "lastVerified": "2024-01-20",
+    "instagram": "@shopearthhero",
+    "facebook": "shopearthhero",
+    "twitter": "@earthhero",
+    "createdAt": "2024-01-20",
+    "lastVerifiedAt": "2024-01-20",
     "status": "active"
   },
   {
@@ -29,23 +26,20 @@
     "name": "Package Free Shop",
     "logo": "/logos/package-free-shop-online.svg",
     "description": "Founded by zero-waste advocate Lauren Singer. Online store offering plastic-free alternatives for everyday products, from kitchen to bathroom to on-the-go.",
-    "categories": ["sustainable-goods"],
+    "categories": ["zero-waste"],
     "type": "online",
     "website": "https://packagefreeshop.com",
-    "contact": {
-      "email": "hello@packagefreeshop.com"
-    },
+    "email": "hello@packagefreeshop.com",
     "location": {
       "city": "Brooklyn",
       "state": "NY",
-      "country": "USA"
+      "country": "USA",
+      "region": "usa-ny"
     },
-    "social": {
-      "instagram": "@packagefreeshop",
-      "facebook": "packagefreeshop"
-    },
-    "addedDate": "2024-01-20",
-    "lastVerified": "2024-01-20",
+    "instagram": "@packagefreeshop",
+    "facebook": "packagefreeshop",
+    "createdAt": "2024-01-20",
+    "lastVerifiedAt": "2024-01-20",
     "status": "active"
   }
 ]

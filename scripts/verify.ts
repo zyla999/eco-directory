@@ -3,7 +3,7 @@
  *
  * This script verifies that stores in the directory are still active:
  * - Checks if store websites are still accessible
- * - Updates lastVerified dates for active stores
+ * - Updates lastVerifiedAt dates for active stores
  * - Marks stores as "needs-review" if issues are detected
  *
  * Run: npx ts-node scripts/verify.ts
@@ -25,7 +25,7 @@ async function verifyStores() {
 
   for (const store of stores) {
     // Skip stores that were recently verified
-    const lastVerified = new Date(store.lastVerified);
+    const lastVerified = new Date(store.lastVerifiedAt);
     const daysSinceVerification = Math.floor(
       (today.getTime() - lastVerified.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -45,7 +45,7 @@ async function verifyStores() {
 
       if (isAccessible) {
         updateStore(store.id, {
-          lastVerified: formatDate(),
+          lastVerifiedAt: formatDate(),
           status: "active",
         });
         console.log(`✅ ${store.name} - verified`);
@@ -60,7 +60,7 @@ async function verifyStores() {
     } else {
       // No website to check, just update verification date
       updateStore(store.id, {
-        lastVerified: formatDate(),
+        lastVerifiedAt: formatDate(),
       });
       console.log(`✅ ${store.name} - no website, marked as verified`);
       verified++;

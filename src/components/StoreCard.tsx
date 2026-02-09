@@ -33,9 +33,11 @@ export default function StoreCard({ store }: StoreCardProps) {
           />
         </div>
 
-        <p className="text-gray-600 text-sm mt-3 line-clamp-2">
-          {store.description}
-        </p>
+        {store.description && (
+          <p className="text-gray-600 text-sm mt-3 line-clamp-2">
+            {store.description}
+          </p>
+        )}
 
         <div className="flex flex-wrap gap-2 mt-4">
           {store.categories.slice(0, 3).map((category) => (

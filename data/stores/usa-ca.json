@@ -7,27 +7,24 @@
     "categories": ["refillery"],
     "type": "brick-and-mortar",
     "website": "https://thewellrefill.com",
-    "contact": {
-      "email": "hello@thewellrefill.com",
-      "phone": "(415) 555-0456"
-    },
+    "email": "hello@thewellrefill.com",
+    "phone": "(415) 555-0456",
     "location": {
       "address": "890 Valencia St",
       "city": "San Francisco",
       "state": "CA",
       "country": "USA",
+      "region": "usa-ca",
       "postalCode": "94110",
       "coordinates": {
         "lat": 37.7599,
         "lng": -122.4214
       }
     },
-    "social": {
-      "instagram": "@thewellrefill",
-      "facebook": "thewellrefill"
-    },
-    "addedDate": "2024-01-17",
-    "lastVerified": "2024-01-17",
+    "instagram": "@thewellrefill",
+    "facebook": "thewellrefill",
+    "createdAt": "2024-01-17",
+    "lastVerifiedAt": "2024-01-17",
     "status": "active"
   },
   {
@@ -38,26 +35,23 @@
     "categories": ["bulk-foods", "refillery"],
     "type": "brick-and-mortar",
     "website": "https://sustainla.com",
-    "contact": {
-      "email": "info@sustainla.com",
-      "phone": "(213) 555-0789"
-    },
+    "email": "info@sustainla.com",
+    "phone": "(213) 555-0789",
     "location": {
       "address": "5214 Monte Vista St",
       "city": "Los Angeles",
       "state": "CA",
       "country": "USA",
+      "region": "usa-ca",
       "postalCode": "90042",
       "coordinates": {
         "lat": 34.1127,
         "lng": -118.1925
       }
     },
-    "social": {
-      "instagram": "@sustainla"
-    },
-    "addedDate": "2024-01-18",
-    "lastVerified": "2024-01-18",
+    "instagram": "@sustainla",
+    "createdAt": "2024-01-18",
+    "lastVerifiedAt": "2024-01-18",
     "status": "active"
   }
 ]

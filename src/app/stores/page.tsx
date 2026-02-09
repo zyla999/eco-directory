@@ -5,9 +5,10 @@ import {
   getAllStores,
   searchStores,
   getCategories,
-  getUniqueStates,
   getStatesWithStores,
 } from "@/lib/stores";
+
+export const revalidate = 3600;
 
 interface StoresPageProps {
   searchParams: Promise<{ q?: string; category?: string; state?: string }>;
@@ -19,7 +20,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const categoryFilter = params.category || "";
   const stateFilter = params.state || "";
 
-  let stores = query ? searchStores(query) : getAllStores();
+  let stores = query ? await searchStores(query) : await getAllStores();
 
   if (categoryFilter) {
     stores = stores.filter((s) =>
@@ -33,9 +34,8 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
     );
   }
 
-  const categories = getCategories();
-  const states = getUniqueStates();
-  const statesWithStores = getStatesWithStores();
+  const categories = await getCategories();
+  const statesWithStores = await getStatesWithStores();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -1,25 +1,22 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getStoreById, getAllStores } from "@/lib/stores";
+import { getStoreById } from "@/lib/stores";
 import { categoryColors } from "@/lib/categoryConfig";
 import { Metadata } from "next";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
+export const revalidate = 3600;
+
 interface StorePageProps {
   params: Promise<{ id: string }>;
-}
-
-export async function generateStaticParams() {
-  const stores = getAllStores();
-  return stores.map((store) => ({ id: store.id }));
 }
 
 export async function generateMetadata({
   params,
 }: StorePageProps): Promise<Metadata> {
   const { id } = await params;
-  const store = getStoreById(id);
+  const store = await getStoreById(id);
 
   if (!store) {
     return { title: "Store Not Found" };
@@ -33,7 +30,7 @@ export async function generateMetadata({
 
 export default async function StorePage({ params }: StorePageProps) {
   const { id } = await params;
-  const store = getStoreById(id);
+  const store = await getStoreById(id);
 
   if (!store) {
     notFound();
@@ -96,12 +93,14 @@ export default async function StorePage({ params }: StorePageProps) {
           </AnimateOnScroll>
 
           {/* Description */}
-          <AnimateOnScroll animation="fade-in">
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">About</h2>
-              <p className="text-gray-600 leading-relaxed">{store.description}</p>
-            </div>
-          </AnimateOnScroll>
+          {store.description && (
+            <AnimateOnScroll animation="fade-in">
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">About</h2>
+                <p className="text-gray-600 leading-relaxed">{store.description}</p>
+              </div>
+            </AnimateOnScroll>
+          )}
 
           {/* Details Grid */}
           <AnimateOnScroll animation="slide-in-left">
@@ -153,9 +152,9 @@ export default async function StorePage({ params }: StorePageProps) {
                       Visit Website
                     </a>
                   )}
-                  {store.contact?.email && (
+                  {store.email && (
                     <a
-                      href={`mailto:${store.contact.email}`}
+                      href={`mailto:${store.email}`}
                       className="flex items-center gap-2 text-gray-600 hover:text-green-600"
                     >
                       <svg
@@ -171,12 +170,12 @@ export default async function StorePage({ params }: StorePageProps) {
                           d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                         />
                       </svg>
-                      {store.contact.email}
+                      {store.email}
                     </a>
                   )}
-                  {store.contact?.phone && (
+                  {store.phone && (
                     <a
-                      href={`tel:${store.contact.phone}`}
+                      href={`tel:${store.phone}`}
                       className="flex items-center gap-2 text-gray-600 hover:text-green-600"
                     >
                       <svg
@@ -192,7 +191,7 @@ export default async function StorePage({ params }: StorePageProps) {
                           d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                         />
                       </svg>
-                      {store.contact.phone}
+                      {store.phone}
                     </a>
                   )}
                 </div>
@@ -201,16 +200,16 @@ export default async function StorePage({ params }: StorePageProps) {
           </AnimateOnScroll>
 
           {/* Social Links */}
-          {store.social && Object.keys(store.social).length > 0 && (
+          {(store.instagram || store.facebook || store.twitter) && (
             <AnimateOnScroll animation="slide-in-right">
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">
                   Follow
                 </h2>
                 <div className="flex gap-4">
-                  {store.social.instagram && (
+                  {store.instagram && (
                     <a
-                      href={`https://instagram.com/${store.social.instagram.replace(
+                      href={`https://instagram.com/${store.instagram.replace(
                         "@",
                         ""
                       )}`}
@@ -228,9 +227,9 @@ export default async function StorePage({ params }: StorePageProps) {
                       </svg>
                     </a>
                   )}
-                  {store.social.facebook && (
+                  {store.facebook && (
                     <a
-                      href={`https://facebook.com/${store.social.facebook}`}
+                      href={`https://facebook.com/${store.facebook}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-blue-600"
@@ -245,9 +244,9 @@ export default async function StorePage({ params }: StorePageProps) {
                       </svg>
                     </a>
                   )}
-                  {store.social.twitter && (
+                  {store.twitter && (
                     <a
-                      href={`https://twitter.com/${store.social.twitter.replace(
+                      href={`https://twitter.com/${store.twitter.replace(
                         "@",
                         ""
                       )}`}
@@ -272,7 +271,7 @@ export default async function StorePage({ params }: StorePageProps) {
 
           {/* Last Verified */}
           <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500">
-            Last verified: {new Date(store.lastVerified).toLocaleDateString()}
+            Last verified: {new Date(store.lastVerifiedAt).toLocaleDateString()}
           </div>
         </div>
       </div>

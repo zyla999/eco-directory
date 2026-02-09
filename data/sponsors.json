@@ -7,7 +7,7 @@
     "website": "https://example.com",
     "cta": "Learn More",
     "placement": ["homepage-featured", "category-sidebar", "state-banner"],
-    "targetCategories": ["wholesale", "sustainable-goods", "refillery"],
+    "targetCategories": ["wholesale", "zero-waste", "refillery"],
     "targetStates": ["CA", "OR", "ON"],
     "startDate": "2025-01-01",
     "endDate": "2025-12-31",

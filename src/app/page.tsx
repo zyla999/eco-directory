@@ -7,11 +7,13 @@ import SponsorCard from "@/components/SponsorCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { getAllStores, getCategories, getStoreStats, getSponsorsByPlacement } from "@/lib/stores";
 
-export default function Home() {
-  const stores = getAllStores();
-  const categories = getCategories();
-  const stats = getStoreStats();
-  const homepageSponsors = getSponsorsByPlacement("homepage-featured");
+export const revalidate = 3600;
+
+export default async function Home() {
+  const stores = await getAllStores();
+  const categories = await getCategories();
+  const stats = await getStoreStats();
+  const homepageSponsors = await getSponsorsByPlacement("homepage-featured");
 
   const featuredStores = stores.slice(0, 4);
 

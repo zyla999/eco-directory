@@ -6,20 +6,17 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { getStoresByCategory, getCategories, getSponsorForCategory } from "@/lib/stores";
 import { Metadata } from "next";
 
+export const revalidate = 3600;
+
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
-}
-
-export async function generateStaticParams() {
-  const categories = getCategories();
-  return categories.map((cat) => ({ category: cat.id }));
 }
 
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
   const { category } = await params;
-  const categories = getCategories();
+  const categories = await getCategories();
   const cat = categories.find((c) => c.id === category);
 
   if (!cat) {
@@ -34,15 +31,15 @@ export async function generateMetadata({
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category } = await params;
-  const categories = getCategories();
+  const categories = await getCategories();
   const cat = categories.find((c) => c.id === category);
 
   if (!cat) {
     notFound();
   }
 
-  const stores = getStoresByCategory(category);
-  const sponsor = getSponsorForCategory(category);
+  const stores = await getStoresByCategory(category);
+  const sponsor = await getSponsorForCategory(category);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

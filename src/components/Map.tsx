@@ -93,9 +93,11 @@ export default function Map({
               <p className="text-sm text-gray-500">
                 {store.location.city}, {store.location.state}
               </p>
-              <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-                {store.description}
-              </p>
+              {store.description && (
+                <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                  {store.description}
+                </p>
+              )}
               <a
                 href={`/stores/${store.id}`}
                 className="text-sm text-green-600 hover:text-green-700 font-medium mt-2 inline-block"

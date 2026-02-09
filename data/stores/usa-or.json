@@ -7,27 +7,24 @@
     "categories": ["refillery"],
     "type": "brick-and-mortar",
     "website": "https://therefillshoppe.com",
-    "contact": {
-      "email": "hello@therefillshoppe.com",
-      "phone": "(503) 555-0123"
-    },
+    "email": "hello@therefillshoppe.com",
+    "phone": "(503) 555-0123",
     "location": {
       "address": "1234 SE Division St",
       "city": "Portland",
       "state": "OR",
       "country": "USA",
+      "region": "usa-or",
       "postalCode": "97202",
       "coordinates": {
         "lat": 45.5051,
         "lng": -122.6345
       }
     },
-    "social": {
-      "instagram": "@therefillshoppe",
-      "facebook": "therefillshoppe"
-    },
-    "addedDate": "2024-01-15",
-    "lastVerified": "2024-01-15",
+    "instagram": "@therefillshoppe",
+    "facebook": "therefillshoppe",
+    "createdAt": "2024-01-15",
+    "lastVerifiedAt": "2024-01-15",
     "status": "active"
   },
   {
@@ -35,28 +32,25 @@
     "name": "Green Earth Goods",
     "logo": "/logos/green-earth-goods-portland.svg",
     "description": "A zero-waste grocery and lifestyle store featuring bulk foods, sustainable home goods, and eco-friendly personal care products. Committed to plastic-free shopping.",
-    "categories": ["bulk-foods", "sustainable-goods"],
+    "categories": ["bulk-foods", "zero-waste"],
     "type": "brick-and-mortar",
     "website": "https://greenearthgoods.com",
-    "contact": {
-      "email": "info@greenearthgoods.com"
-    },
+    "email": "info@greenearthgoods.com",
     "location": {
       "address": "567 NW 23rd Ave",
       "city": "Portland",
       "state": "OR",
       "country": "USA",
+      "region": "usa-or",
       "postalCode": "97210",
       "coordinates": {
         "lat": 45.5298,
         "lng": -122.6986
       }
     },
-    "social": {
-      "instagram": "@greenearthgoods"
-    },
-    "addedDate": "2024-01-16",
-    "lastVerified": "2024-01-16",
+    "instagram": "@greenearthgoods",
+    "createdAt": "2024-01-16",
+    "lastVerifiedAt": "2024-01-16",
     "status": "active"
   }
 ]

@@ -10,20 +10,17 @@ import {
 } from "@/lib/stores";
 import { Metadata } from "next";
 
+export const revalidate = 3600;
+
 interface StatePageProps {
   params: Promise<{ state: string }>;
-}
-
-export async function generateStaticParams() {
-  const states = getStatesWithStores();
-  return states.map((s) => ({ state: s.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: StatePageProps): Promise<Metadata> {
   const { state: slug } = await params;
-  const states = getStatesWithStores();
+  const states = await getStatesWithStores();
   const stateInfo = states.find((s) => s.slug === slug);
 
   if (!stateInfo) {
@@ -38,15 +35,15 @@ export async function generateMetadata({
 
 export default async function StatePage({ params }: StatePageProps) {
   const { state: slug } = await params;
-  const states = getStatesWithStores();
+  const states = await getStatesWithStores();
   const stateInfo = states.find((s) => s.slug === slug);
 
   if (!stateInfo) {
     notFound();
   }
 
-  const stores = getStoresByStateSlug(slug);
-  const sponsor = getSponsorForState(stateInfo.stateCode);
+  const stores = await getStoresByStateSlug(slug);
+  const sponsor = await getSponsorForState(stateInfo.stateCode);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

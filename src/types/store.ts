@@ -1,7 +1,7 @@
 export type StoreCategory =
   | "refillery"
   | "bulk-foods"
-  | "sustainable-goods"
+  | "zero-waste"
   | "thrift-consignment"
   | "farmers-market"
   | "manufacturer"
@@ -34,6 +34,7 @@ export interface StoreLocation {
   city: string;
   state: string;
   country: "USA" | "Canada";
+  region?: string;
   postalCode?: string;
   coordinates?: {
     lat: number;
@@ -41,32 +42,46 @@ export interface StoreLocation {
   };
 }
 
-export interface StoreContact {
-  email?: string;
-  phone?: string;
-}
-
-export interface StoreSocial {
-  instagram?: string;
-  facebook?: string;
-  twitter?: string;
-  tiktok?: string;
+export interface StoreImage {
+  src: string;
+  alt?: string;
+  credit?: string;
 }
 
 export interface Store {
   id: string;
   name: string;
-  description: string;
+  description?: string;
+  shortDescription?: string;
   categories: StoreCategory[];
+  tags?: string[];
   type: StoreType;
   logo?: string;
+  logoAlt?: string;
+  image?: StoreImage;
   website?: string;
-  contact?: StoreContact;
+  email?: string;
+  phone?: string;
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+  tiktok?: string;
   location: StoreLocation;
-  social?: StoreSocial;
-  addedDate: string;
-  lastVerified: string;
+  featured?: boolean;
+  sponsored?: boolean;
+  sponsorId?: string;
+  priority?: number;
+  shipsTo?: string[];
+  serviceArea?: string[];
+  hours?: string;
+  priceLevel?: number;
+  features?: string[];
+  createdAt: string;
+  updatedAt?: string;
+  lastVerifiedAt: string;
+  source?: string;
   status: StoreStatus;
+  reviewNotes?: string;
 }
 
 export interface Category {
