@@ -9,6 +9,22 @@ const CATEGORIES = [
   "farmers-market", "manufacturer", "wholesale", "service-provider",
 ];
 
+const STORE_TYPES = [
+  { value: "brick-and-mortar", label: "Brick & Mortar" },
+  { value: "online", label: "Online" },
+];
+
+function typeToSelection(type: string): string[] {
+  if (type === "both") return ["brick-and-mortar", "online"];
+  return [type];
+}
+
+function selectionToType(sel: string[]): string {
+  if (sel.includes("brick-and-mortar") && sel.includes("online")) return "both";
+  if (sel.includes("online")) return "online";
+  return "brick-and-mortar";
+}
+
 export default function EditStorePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
@@ -19,7 +35,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     name: "",
     description: "",
     categories: [] as string[],
-    type: "brick-and-mortar",
+    types: ["brick-and-mortar"] as string[],
     status: "active",
     website: "",
     email: "",
@@ -48,7 +64,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           name: data.name || "",
           description: data.description || "",
           categories: data.categories || [],
-          type: data.type || "brick-and-mortar",
+          types: typeToSelection(data.type || "brick-and-mortar"),
           status: data.status || "active",
           website: data.website || "",
           email: data.email || "",
@@ -92,7 +108,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
       name: form.name,
       description: form.description || null,
       categories: form.categories,
-      type: form.type,
+      type: selectionToType(form.types),
       status: form.status,
       website: form.website || null,
       email: form.email || null,
@@ -176,16 +192,36 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           </div>
         </div>
 
-        {/* Type, Status, Featured */}
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
-              <option value="brick-and-mortar">Brick & Mortar</option>
-              <option value="online">Online</option>
-              <option value="both">Both</option>
-            </select>
+        {/* Type */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Type *</label>
+          <div className="flex flex-wrap gap-2">
+            {STORE_TYPES.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    types: prev.types.includes(t.value)
+                      ? prev.types.filter((v) => v !== t.value)
+                      : [...prev.types, t.value],
+                  }))
+                }
+                className={`px-3 py-1 rounded-full text-sm transition ${
+                  form.types.includes(t.value)
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
+        </div>
+
+        {/* Status & Featured */}
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
@@ -330,7 +366,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            disabled={saving || !form.name || form.categories.length === 0}
+            disabled={saving || !form.name || form.categories.length === 0 || form.types.length === 0}
             className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Changes"}

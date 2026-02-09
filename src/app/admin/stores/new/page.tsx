@@ -9,6 +9,17 @@ const CATEGORIES = [
   "farmers-market", "manufacturer", "wholesale", "service-provider",
 ];
 
+const STORE_TYPES = [
+  { value: "brick-and-mortar", label: "Brick & Mortar" },
+  { value: "online", label: "Online" },
+];
+
+function selectionToType(sel: string[]): string {
+  if (sel.includes("brick-and-mortar") && sel.includes("online")) return "both";
+  if (sel.includes("online")) return "online";
+  return "brick-and-mortar";
+}
+
 export default function NewStorePage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -17,7 +28,7 @@ export default function NewStorePage() {
     name: "",
     description: "",
     categories: [] as string[],
-    type: "brick-and-mortar",
+    types: ["brick-and-mortar"] as string[],
     status: "active",
     website: "",
     email: "",
@@ -57,7 +68,7 @@ export default function NewStorePage() {
       name: form.name,
       description: form.description || null,
       categories: form.categories,
-      type: form.type,
+      type: selectionToType(form.types),
       status: form.status,
       website: form.website || null,
       email: form.email || null,
@@ -137,32 +148,46 @@ export default function NewStorePage() {
           </div>
         </div>
 
-        {/* Type & Status */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <select
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2"
-            >
-              <option value="brick-and-mortar">Brick & Mortar</option>
-              <option value="online">Online</option>
-              <option value="both">Both</option>
-            </select>
+        {/* Type */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Type *</label>
+          <div className="flex flex-wrap gap-2">
+            {STORE_TYPES.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    types: prev.types.includes(t.value)
+                      ? prev.types.filter((v) => v !== t.value)
+                      : [...prev.types, t.value],
+                  }))
+                }
+                className={`px-3 py-1 rounded-full text-sm transition ${
+                  form.types.includes(t.value)
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2"
-            >
-              <option value="active">Active</option>
-              <option value="needs-review">Needs Review</option>
-              <option value="closed">Closed</option>
-            </select>
-          </div>
+        </div>
+
+        {/* Status */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <select
+            value={form.status}
+            onChange={(e) => setForm({ ...form, status: e.target.value })}
+            className="w-full rounded-lg border border-gray-300 px-4 py-2"
+          >
+            <option value="active">Active</option>
+            <option value="needs-review">Needs Review</option>
+            <option value="closed">Closed</option>
+          </select>
         </div>
 
         {/* Logo */}
@@ -241,12 +266,12 @@ export default function NewStorePage() {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City{form.type !== "online" && " *"}</label>
-            <input type="text" required={form.type !== "online"} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            <label className="block text-sm font-medium text-gray-700 mb-1">City{form.types.includes("brick-and-mortar") && " *"}</label>
+            <input type="text" required={form.types.includes("brick-and-mortar")} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">State{form.type !== "online" && " *"}</label>
-            <input type="text" required={form.type !== "online"} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            <label className="block text-sm font-medium text-gray-700 mb-1">State{form.types.includes("brick-and-mortar") && " *"}</label>
+            <input type="text" required={form.types.includes("brick-and-mortar")} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
@@ -275,7 +300,7 @@ export default function NewStorePage() {
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            disabled={saving || !form.name || form.categories.length === 0}
+            disabled={saving || !form.name || form.categories.length === 0 || form.types.length === 0}
             className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
           >
             {saving ? "Creating..." : "Create Store"}
