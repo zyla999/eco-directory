@@ -141,7 +141,6 @@ export default function StoreFilters({
           <option value="">All Types</option>
           <option value="brick-and-mortar">Brick & Mortar</option>
           <option value="online">Online</option>
-          <option value="both">Both</option>
           <option value="mobile">Mobile</option>
         </select>
 
