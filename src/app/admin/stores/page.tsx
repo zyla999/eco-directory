@@ -63,11 +63,11 @@ export default function AdminStoresPage() {
     if (countryFilter) query = query.eq("country", countryFilter);
     if (typeFilter) {
       if (typeFilter === "online") {
-        query = query.or("type.eq.online,type.eq.both,type.like.%online%");
+        query = query.or("type.eq.online,type.like.%online%");
       } else if (typeFilter === "mobile") {
         query = query.or("type.eq.mobile,type.like.%mobile%");
       } else {
-        query = query.or("type.eq.brick-and-mortar,type.eq.both,type.like.%brick-and-mortar%");
+        query = query.or("type.eq.brick-and-mortar,type.like.%brick-and-mortar%");
       }
     }
 
@@ -264,7 +264,7 @@ export default function AdminStoresPage() {
                     <td className="px-4 py-3 text-gray-600">{store.state || "—"}</td>
                     <td className="px-4 py-3">
                       {(() => {
-                        const types = store.type === "both" ? ["brick-and-mortar", "online"] : store.type.includes("+") ? store.type.split("+") : [store.type];
+                        const types = store.type.includes("+") ? store.type.split("+") : [store.type];
                         const labels: Record<string, [string, string]> = {
                           "brick-and-mortar": ["B&M", "bg-gray-100 text-gray-700"],
                           "online": ["Online", "bg-cyan-50 text-cyan-700"],
