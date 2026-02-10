@@ -138,10 +138,16 @@ function parseCSV(text: string): ParsedRow[] {
   });
 }
 
-function makeId(name: string, city: string): string {
+function makeId(name: string, city: string, address?: string): string {
   const slug = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  return `${slug(name)}-${slug(city || "online")}`;
+  const base = `${slug(name)}-${slug(city || "online")}`;
+  if (address) {
+    // Extract street number or short identifier to disambiguate same-name-same-city stores
+    const num = address.match(/^\d+/);
+    if (num) return `${base}-${num[0]}`;
+  }
+  return base;
 }
 
 function parseCategories(raw: string): string[] {
@@ -199,12 +205,12 @@ export default function ImportPage() {
       }
 
       const city = row.city?.trim() || "";
-      const id = makeId(name, city);
+      const address = row.address?.trim() || "";
+      const id = makeId(name, city, address);
       const categories = parseCategories(row.categories || "");
       const type = row.type?.trim().toLowerCase() || "brick-and-mortar";
       const now = new Date().toISOString();
 
-      const address = row.address?.trim() || "";
       const state = row.state?.trim() || "";
       const country = row.country?.trim() || "USA";
 

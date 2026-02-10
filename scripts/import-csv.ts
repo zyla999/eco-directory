@@ -18,10 +18,15 @@ const supabase = createClient(
 // instagram, facebook, twitter, tiktok,
 // address, city, state, country, postal_code
 
-function makeId(name: string, city: string): string {
+function makeId(name: string, city: string, address?: string): string {
   const slug = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  return `${slug(name)}-${slug(city || "online")}`;
+  const base = `${slug(name)}-${slug(city || "online")}`;
+  if (address) {
+    const num = address.match(/^\d+/);
+    if (num) return `${base}-${num[0]}`;
+  }
+  return base;
 }
 
 function parseCategories(raw: string): string[] {
@@ -67,7 +72,8 @@ async function main() {
     }
 
     const city = row.city?.trim() || "";
-    const id = makeId(name, city);
+    const address = row.address?.trim() || "";
+    const id = makeId(name, city, address);
     const categories = parseCategories(row.categories || "");
     const type = row.type?.trim().toLowerCase() || "brick-and-mortar";
     const now = new Date().toISOString();

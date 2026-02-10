@@ -63,7 +63,12 @@ export default function NewStorePage() {
     setSaving(true);
     setError("");
 
-    const id = `${form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${(form.city || "online").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    let id = `${slug(form.name)}-${slug(form.city || "online")}`;
+    if (form.address) {
+      const num = form.address.match(/^\d+/);
+      if (num) id = `${id}-${num[0]}`;
+    }
 
     const { error: dbError } = await createClient().from("stores").insert({
       id,
