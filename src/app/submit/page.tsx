@@ -12,6 +12,7 @@ const categories: { id: StoreCategory; name: string }[] = [
   { id: "manufacturer", name: "Manufacturer / Brand" },
   { id: "wholesale", name: "Wholesale Distributor" },
   { id: "service-provider", name: "Service Provider" },
+  { id: "apothecary", name: "Apothecary" },
 ];
 
 export default function SubmitPage() {

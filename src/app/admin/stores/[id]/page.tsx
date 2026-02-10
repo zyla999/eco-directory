@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const CATEGORIES = [
   "refillery", "bulk-foods", "zero-waste", "thrift-consignment",
-  "farmers-market", "manufacturer", "wholesale", "service-provider",
+  "farmers-market", "manufacturer", "wholesale", "service-provider", "apothecary",
 ];
 
 const STORE_TYPES = [

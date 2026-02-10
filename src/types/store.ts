@@ -6,7 +6,8 @@ export type StoreCategory =
   | "farmers-market"
   | "manufacturer"
   | "wholesale"
-  | "service-provider";
+  | "service-provider"
+  | "apothecary";
 
 export type StoreType = "brick-and-mortar" | "online" | "mobile" | (string & {});
 

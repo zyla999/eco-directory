@@ -9,6 +9,7 @@ export const categoryColors: Record<StoreCategory | string, string> = {
   manufacturer: "bg-indigo-100 text-indigo-800",
   wholesale: "bg-teal-100 text-teal-800",
   "service-provider": "bg-rose-100 text-rose-800",
+  apothecary: "bg-lime-100 text-lime-800",
 };
 
 export const categoryIcons: Record<string, string> = {

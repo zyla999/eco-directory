@@ -27,7 +27,7 @@ const STATUS_TABS = [
 
 const CATEGORIES = [
   "refillery", "bulk-foods", "zero-waste", "thrift-consignment",
-  "farmers-market", "manufacturer", "wholesale", "service-provider",
+  "farmers-market", "manufacturer", "wholesale", "service-provider", "apothecary",
 ];
 
 type SortField = "name" | "city" | "state" | "created_at";

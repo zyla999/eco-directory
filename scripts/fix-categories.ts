@@ -10,7 +10,7 @@ const sb = createClient(
 
 const VALID_CATEGORIES = [
   "refillery", "bulk-foods", "zero-waste", "thrift-consignment",
-  "farmers-market", "manufacturer", "wholesale", "service-provider",
+  "farmers-market", "manufacturer", "wholesale", "service-provider", "apothecary",
 ];
 
 // Map invalid categories to valid ones
