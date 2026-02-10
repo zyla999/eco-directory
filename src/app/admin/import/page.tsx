@@ -153,7 +153,7 @@ function makeId(name: string, city: string, address?: string): string {
 function parseCategories(raw: string): string[] {
   if (!raw) return [];
   return raw
-    .split(",")
+    .split(/[,;]/)
     .map((c) => c.trim().toLowerCase().replace(/\s+/g, "-"))
     .filter(Boolean);
 }
