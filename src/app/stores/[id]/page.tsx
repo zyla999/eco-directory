@@ -80,7 +80,7 @@ export default async function StorePage({ params }: StorePageProps) {
                   {store.location.city}, {store.location.state},{" "}
                   {store.location.country}
                 </p>
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-wrap items-center gap-2 mt-3">
                   {store.categories.map((category) => (
                     <Link
                       key={category}
@@ -95,6 +95,22 @@ export default async function StorePage({ params }: StorePageProps) {
                   {store.offersWholesale && (
                     <span className="px-3 py-1 text-sm font-medium rounded-full bg-amber-100 text-amber-800">
                       Wholesale Available
+                    </span>
+                  )}
+                  <span className="text-gray-300">|</span>
+                  {store.type.includes("brick-and-mortar") && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">
+                      Brick & Mortar
+                    </span>
+                  )}
+                  {store.type.includes("online") && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full bg-cyan-50 text-cyan-700">
+                      Online Store
+                    </span>
+                  )}
+                  {store.type.includes("mobile") && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full bg-orange-50 text-orange-700">
+                      Mobile Delivery
                     </span>
                   )}
                 </div>
@@ -127,15 +143,6 @@ export default async function StorePage({ params }: StorePageProps) {
                     {store.location.postalCode}
                   </p>
                   <p>{store.location.country}</p>
-                  {store.type.includes("brick-and-mortar") && (
-                    <p className="text-gray-700 font-medium">Brick & Mortar</p>
-                  )}
-                  {store.type.includes("online") && (
-                    <p className="text-cyan-600 font-medium">Online Store</p>
-                  )}
-                  {store.type.includes("mobile") && (
-                    <p className="text-orange-600 font-medium">Mobile Store</p>
-                  )}
                 </div>
               </div>
 
