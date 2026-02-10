@@ -75,9 +75,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
                   {categories.map((cat) => (
                     <a
                       key={cat.id}
-                      href={`/stores?category=${cat.id}${
-                        stateFilter ? `&state=${stateFilter}` : ""
-                      }`}
+                      href={`/category/${cat.id}`}
                       className={`block text-sm ${
                         categoryFilter === cat.id
                           ? "text-green-600 font-medium"

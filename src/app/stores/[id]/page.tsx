@@ -84,7 +84,7 @@ export default async function StorePage({ params }: StorePageProps) {
                   {store.categories.map((category) => (
                     <Link
                       key={category}
-                      href={`/stores?category=${category}`}
+                      href={`/category/${category}`}
                       className={`px-3 py-1 text-sm font-medium rounded-full ${
                         categoryColors[category] || "bg-gray-100 text-gray-800"
                       }`}

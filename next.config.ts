@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "ilmadsgjunnexhdntvdx.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "ecofreax.ca",
+      },
     ],
   },
 };

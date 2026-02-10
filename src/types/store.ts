@@ -13,7 +13,7 @@ export type StoreType = "brick-and-mortar" | "online" | "mobile" | (string & {})
 
 export type StoreStatus = "active" | "needs-review" | "closed";
 
-export type AdPlacement = "homepage-featured" | "category-sidebar" | "state-banner";
+export type AdPlacement = "homepage-featured" | "category-sidebar" | "state-banner" | "main-sponsor";
 
 export interface Sponsor {
   id: string;

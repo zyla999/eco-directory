@@ -245,6 +245,28 @@ export async function getSponsorForCategory(category: string): Promise<Sponsor |
   );
 }
 
+export async function getMainSponsors(): Promise<Sponsor[]> {
+  const sponsors = await getSponsors();
+  return sponsors
+    .filter((s) => s.placement.includes("main-sponsor"))
+    .slice(0, 2);
+}
+
+export async function getSponsorsForCategoryPage(
+  category: string,
+  excludeIds: string[] = []
+): Promise<Sponsor[]> {
+  const sponsors = await getSponsors();
+  return sponsors
+    .filter(
+      (s) =>
+        !excludeIds.includes(s.id) &&
+        s.placement.includes("category-sidebar") &&
+        (!s.targetCategories || s.targetCategories.includes(category as any))
+    )
+    .slice(0, 2);
+}
+
 export async function getSponsorForState(state: string): Promise<Sponsor | undefined> {
   const sponsors = await getSponsors();
   return sponsors.find(

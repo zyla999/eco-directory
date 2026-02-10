@@ -33,7 +33,7 @@ const EMPTY_SPONSOR = {
   is_active: true,
 };
 
-const PLACEMENT_OPTIONS = ["homepage-featured", "category-sidebar", "state-banner"];
+const PLACEMENT_OPTIONS = ["homepage-featured", "category-sidebar", "state-banner", "main-sponsor"];
 
 export default function AdminSponsorsPage() {
   const [sponsors, setSponsors] = useState<SponsorRow[]>([]);

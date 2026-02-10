@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import StoreCard from "@/components/StoreCard";
-import SponsorCard from "@/components/SponsorCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { getStoresByCategory, getCategories, getSponsorForCategory } from "@/lib/stores";
+import CategoryStoreList from "@/components/CategoryStoreList";
+import { getStoresByCategory, getCategories, getMainSponsors, getSponsorsForCategoryPage } from "@/lib/stores";
 import { Metadata } from "next";
 
 export const revalidate = 3600;
@@ -38,8 +37,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const stores = await getStoresByCategory(category);
-  const sponsor = await getSponsorForCategory(category);
+  const [stores, mainSponsors] = await Promise.all([
+    getStoresByCategory(category),
+    getMainSponsors(),
+  ]);
+
+  // Fetch category sponsors excluding main sponsor IDs so all are different entities
+  const mainIds = mainSponsors.map((s) => s.id);
+  const categorySponsors = await getSponsorsForCategoryPage(category, mainIds);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -72,36 +77,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </AnimateOnScroll>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1">
-          {stores.length > 0 ? (
-            <div className="grid md:grid-cols-2 gap-6">
-              {stores.map((store, i) => (
-                <AnimateOnScroll key={store.id} animation="fade-in-up" stagger={Math.min((i % 6) + 1, 7)} className="h-full">
-                  <StoreCard store={store} />
-                </AnimateOnScroll>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-              <p className="text-gray-500">No businesses found in this category yet.</p>
-              <Link
-                href="/submit"
-                className="text-green-600 hover:text-green-700 font-medium mt-2 inline-block"
-              >
-                List your business
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        {sponsor && (
-          <aside className="lg:w-72 flex-shrink-0">
-            <SponsorCard sponsor={sponsor} variant="sidebar" />
-          </aside>
-        )}
-      </div>
+      <CategoryStoreList
+        stores={stores}
+        categoryName={cat.name}
+        mainSponsors={mainSponsors}
+        categorySponsors={categorySponsors}
+      />
     </div>
   );
 }
