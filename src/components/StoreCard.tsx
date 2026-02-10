@@ -47,7 +47,7 @@ export default function StoreCard({ store }: StoreCardProps) {
                 categoryColors[category] || "bg-gray-100 text-gray-800"
               }`}
             >
-              {category.replace("-", " ")}
+              {category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
             </span>
           ))}
           {store.offersWholesale && (

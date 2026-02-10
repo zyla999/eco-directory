@@ -89,7 +89,7 @@ export default async function StorePage({ params }: StorePageProps) {
                         categoryColors[category] || "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {category.replace("-", " ")}
+                      {category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                     </Link>
                   ))}
                   {store.offersWholesale && (
@@ -127,10 +127,13 @@ export default async function StorePage({ params }: StorePageProps) {
                     {store.location.postalCode}
                   </p>
                   <p>{store.location.country}</p>
-                  {(store.type === "online" || store.type.includes("online")) && (
+                  {store.type.includes("brick-and-mortar") && (
+                    <p className="text-gray-700 font-medium">Brick & Mortar</p>
+                  )}
+                  {store.type.includes("online") && (
                     <p className="text-cyan-600 font-medium">Online Store</p>
                   )}
-                  {(store.type === "mobile" || store.type.includes("mobile")) && (
+                  {store.type.includes("mobile") && (
                     <p className="text-orange-600 font-medium">Mobile Store</p>
                   )}
                 </div>
