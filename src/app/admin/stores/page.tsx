@@ -63,11 +63,11 @@ export default function AdminStoresPage() {
     if (countryFilter) query = query.eq("country", countryFilter);
     if (typeFilter) {
       if (typeFilter === "online") {
-        query = query.in("type", ["online", "both"]);
+        query = query.or("type.eq.online,type.eq.both,type.like.%online%");
       } else if (typeFilter === "mobile") {
-        query = query.eq("type", "mobile");
+        query = query.or("type.eq.mobile,type.like.%mobile%");
       } else {
-        query = query.in("type", ["brick-and-mortar", "both"]);
+        query = query.or("type.eq.brick-and-mortar,type.eq.both,type.like.%brick-and-mortar%");
       }
     }
 
@@ -263,17 +263,22 @@ export default function AdminStoresPage() {
                     <td className="px-4 py-3 text-gray-600">{store.city || "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{store.state || "—"}</td>
                     <td className="px-4 py-3">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded ${
-                        store.type === "online"
-                          ? "bg-cyan-50 text-cyan-700"
-                          : store.type === "both"
-                          ? "bg-purple-50 text-purple-700"
-                          : store.type === "mobile"
-                          ? "bg-orange-50 text-orange-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}>
-                        {store.type === "brick-and-mortar" ? "B&M" : store.type === "both" ? "Both" : store.type === "mobile" ? "Mobile" : "Online"}
-                      </span>
+                      {(() => {
+                        const types = store.type === "both" ? ["brick-and-mortar", "online"] : store.type.includes("+") ? store.type.split("+") : [store.type];
+                        const labels: Record<string, [string, string]> = {
+                          "brick-and-mortar": ["B&M", "bg-gray-100 text-gray-700"],
+                          "online": ["Online", "bg-cyan-50 text-cyan-700"],
+                          "mobile": ["Mobile", "bg-orange-50 text-orange-700"],
+                        };
+                        return (
+                          <div className="flex gap-1">
+                            {types.map((t) => {
+                              const [label, cls] = labels[t] || [t, "bg-gray-100 text-gray-700"];
+                              return <span key={t} className={`text-xs font-medium px-2 py-0.5 rounded ${cls}`}>{label}</span>;
+                            })}
+                          </div>
+                        );
+                      })()}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">

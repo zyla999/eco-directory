@@ -16,10 +16,11 @@ const STORE_TYPES = [
 ];
 
 function selectionToType(sel: string[]): string {
-  if (sel.includes("brick-and-mortar") && sel.includes("online")) return "both";
-  if (sel.includes("mobile")) return "mobile";
-  if (sel.includes("online")) return "online";
-  return "brick-and-mortar";
+  if (sel.length === 0) return "brick-and-mortar";
+  if (sel.length === 1) return sel[0];
+  const sorted = [...sel].sort();
+  if (sorted.length === 2 && sorted[0] === "brick-and-mortar" && sorted[1] === "online") return "both";
+  return sorted.join("+");
 }
 
 export default function NewStorePage() {

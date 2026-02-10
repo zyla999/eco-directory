@@ -127,10 +127,10 @@ export default async function StorePage({ params }: StorePageProps) {
                     {store.location.postalCode}
                   </p>
                   <p>{store.location.country}</p>
-                  {store.type === "online" && (
+                  {(store.type === "online" || store.type === "both" || store.type.includes("online")) && (
                     <p className="text-cyan-600 font-medium">Online Store</p>
                   )}
-                  {store.type === "mobile" && (
+                  {(store.type === "mobile" || store.type.includes("mobile")) && (
                     <p className="text-orange-600 font-medium">Mobile Store</p>
                   )}
                 </div>

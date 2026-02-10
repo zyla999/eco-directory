@@ -17,14 +17,17 @@ const STORE_TYPES = [
 
 function typeToSelection(type: string): string[] {
   if (type === "both") return ["brick-and-mortar", "online"];
+  if (type.includes("+")) return type.split("+");
   return [type];
 }
 
 function selectionToType(sel: string[]): string {
-  if (sel.includes("brick-and-mortar") && sel.includes("online")) return "both";
-  if (sel.includes("mobile")) return "mobile";
-  if (sel.includes("online")) return "online";
-  return "brick-and-mortar";
+  if (sel.length === 0) return "brick-and-mortar";
+  if (sel.length === 1) return sel[0];
+  const sorted = [...sel].sort();
+  // Keep "both" for backwards compat with B&M + Online
+  if (sorted.length === 2 && sorted[0] === "brick-and-mortar" && sorted[1] === "online") return "both";
+  return sorted.join("+");
 }
 
 export default function EditStorePage({ params }: { params: Promise<{ id: string }> }) {
