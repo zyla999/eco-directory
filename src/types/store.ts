@@ -8,7 +8,7 @@ export type StoreCategory =
   | "wholesale"
   | "service-provider";
 
-export type StoreType = "brick-and-mortar" | "online" | "both";
+export type StoreType = "brick-and-mortar" | "online" | "both" | "mobile";
 
 export type StoreStatus = "active" | "needs-review" | "closed";
 

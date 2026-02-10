@@ -233,7 +233,7 @@ export default function ImportPage() {
         name,
         description: row.description?.trim() || null,
         categories,
-        type: ["brick-and-mortar", "online", "both"].includes(type) ? type : "brick-and-mortar",
+        type: ["brick-and-mortar", "online", "both", "mobile"].includes(type) ? type : "brick-and-mortar",
         status: "active" as const,
         website: row.website?.trim() || null,
         email: row.email?.trim() || null,

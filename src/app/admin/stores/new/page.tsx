@@ -12,10 +12,12 @@ const CATEGORIES = [
 const STORE_TYPES = [
   { value: "brick-and-mortar", label: "Brick & Mortar" },
   { value: "online", label: "Online" },
+  { value: "mobile", label: "Mobile" },
 ];
 
 function selectionToType(sel: string[]): string {
   if (sel.includes("brick-and-mortar") && sel.includes("online")) return "both";
+  if (sel.includes("mobile")) return "mobile";
   if (sel.includes("online")) return "online";
   return "brick-and-mortar";
 }

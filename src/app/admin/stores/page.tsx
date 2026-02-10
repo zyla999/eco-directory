@@ -64,6 +64,8 @@ export default function AdminStoresPage() {
     if (typeFilter) {
       if (typeFilter === "online") {
         query = query.in("type", ["online", "both"]);
+      } else if (typeFilter === "mobile") {
+        query = query.eq("type", "mobile");
       } else {
         query = query.in("type", ["brick-and-mortar", "both"]);
       }
@@ -192,6 +194,7 @@ export default function AdminStoresPage() {
           <option value="">All Types</option>
           <option value="brick-and-mortar">Brick & Mortar</option>
           <option value="online">Online</option>
+          <option value="mobile">Mobile</option>
         </select>
 
         {/* Clear filters */}
@@ -265,9 +268,11 @@ export default function AdminStoresPage() {
                           ? "bg-cyan-50 text-cyan-700"
                           : store.type === "both"
                           ? "bg-purple-50 text-purple-700"
+                          : store.type === "mobile"
+                          ? "bg-orange-50 text-orange-700"
                           : "bg-gray-100 text-gray-700"
                       }`}>
-                        {store.type === "brick-and-mortar" ? "B&M" : store.type === "both" ? "Both" : "Online"}
+                        {store.type === "brick-and-mortar" ? "B&M" : store.type === "both" ? "Both" : store.type === "mobile" ? "Mobile" : "Online"}
                       </span>
                     </td>
                     <td className="px-4 py-3">

@@ -130,6 +130,9 @@ export default async function StorePage({ params }: StorePageProps) {
                   {store.type === "online" && (
                     <p className="text-cyan-600 font-medium">Online Store</p>
                   )}
+                  {store.type === "mobile" && (
+                    <p className="text-orange-600 font-medium">Mobile Store</p>
+                  )}
                 </div>
               </div>
 
