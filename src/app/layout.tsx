@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ecodirectory.ca"),
   title: "Eco Directory - Eco-Friendly Business Directory for North America",
   description:
     "Discover eco-friendly stores, brands, wholesalers, and service providers across the USA and Canada. Your directory for sustainable businesses.",

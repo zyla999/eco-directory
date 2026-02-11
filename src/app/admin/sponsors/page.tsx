@@ -10,6 +10,8 @@ interface SponsorRow {
   logo: string;
   website: string;
   cta: string;
+  image: string;
+  video: string;
   placement: string[];
   target_categories: string[];
   target_states: string[];
@@ -25,6 +27,8 @@ const EMPTY_SPONSOR = {
   logo: "",
   website: "",
   cta: "",
+  image: "",
+  video: "",
   placement: [] as string[],
   target_categories: [] as string[],
   target_states: [] as string[],
@@ -62,6 +66,8 @@ export default function AdminSponsorsPage() {
       logo: s.logo || "",
       website: s.website || "",
       cta: s.cta || "",
+      image: s.image || "",
+      video: s.video || "",
       placement: s.placement || [],
       target_categories: s.target_categories || [],
       target_states: s.target_states || [],
@@ -97,6 +103,8 @@ export default function AdminSponsorsPage() {
       logo: form.logo || null,
       website: form.website || null,
       cta: form.cta || null,
+      image: form.image || null,
+      video: form.video || null,
       placement: form.placement,
       target_categories: form.target_categories,
       target_states: form.target_states,
@@ -190,6 +198,20 @@ export default function AdminSponsorsPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">CTA Text</label>
               <input type="text" value={form.cta} onChange={(e) => setForm({ ...form, cta: e.target.value })} className="w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+            </div>
+          </div>
+
+          {/* Ad Media */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Ad Image URL</label>
+              <input type="url" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://example.com/ad-banner.jpg" className="w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <p className="text-xs text-gray-400 mt-1">Banner image displayed as the ad (16:9 ratio works best)</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Ad Video URL</label>
+              <input type="url" value={form.video} onChange={(e) => setForm({ ...form, video: e.target.value })} placeholder="https://example.com/ad-video.mp4" className="w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <p className="text-xs text-gray-400 mt-1">Video autoplays muted (takes priority over image)</p>
             </div>
           </div>
 

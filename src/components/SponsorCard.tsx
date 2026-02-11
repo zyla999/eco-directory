@@ -7,6 +7,64 @@ interface SponsorCardProps {
 }
 
 export default function SponsorCard({ sponsor, variant }: SponsorCardProps) {
+  // Image or video ad — used for both variants when media is provided
+  if (sponsor.image || sponsor.video) {
+    return (
+      <a
+        href={sponsor.website}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block border-2 border-amber-200 bg-amber-50/50 rounded-lg overflow-hidden hover:shadow-md transition"
+      >
+        <div className="relative">
+          <span className="absolute top-2 left-2 z-10 text-xs font-medium text-amber-600 bg-amber-50/90 px-2 py-0.5 rounded uppercase tracking-wider">
+            Sponsored
+          </span>
+          {sponsor.video ? (
+            <video
+              src={sponsor.video}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full aspect-video object-cover"
+            />
+          ) : (
+            <Image
+              src={sponsor.image!}
+              alt={`${sponsor.name} ad`}
+              width={600}
+              height={300}
+              className="w-full aspect-video object-cover"
+            />
+          )}
+        </div>
+        <div className="p-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            {sponsor.logo && (
+              <Image
+                src={sponsor.logo}
+                alt={`${sponsor.name} logo`}
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain rounded flex-shrink-0"
+              />
+            )}
+            <span className="text-sm font-medium text-gray-900 truncate">
+              {sponsor.name}
+            </span>
+          </div>
+          {sponsor.cta && (
+            <span className="bg-amber-500 text-white text-xs px-3 py-1 rounded-lg font-medium hover:bg-amber-600 transition whitespace-nowrap flex-shrink-0">
+              {sponsor.cta}
+            </span>
+          )}
+        </div>
+      </a>
+    );
+  }
+
+  // Text-based fallback — banner variant
   if (variant === "banner") {
     return (
       <a
@@ -42,6 +100,7 @@ export default function SponsorCard({ sponsor, variant }: SponsorCardProps) {
     );
   }
 
+  // Text-based fallback — sidebar variant
   return (
     <a
       href={sponsor.website}

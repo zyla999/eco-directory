@@ -65,6 +65,8 @@ function transformSponsor(row: any): Sponsor {
     logo: row.logo,
     website: row.website,
     cta: row.cta,
+    image: row.image ?? undefined,
+    video: row.video ?? undefined,
     placement: row.placement || [],
     targetCategories: row.target_categories ?? undefined,
     targetStates: row.target_states ?? undefined,

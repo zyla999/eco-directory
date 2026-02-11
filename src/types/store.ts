@@ -22,6 +22,8 @@ export interface Sponsor {
   logo: string;
   website: string;
   cta: string;
+  image?: string;
+  video?: string;
   placement: AdPlacement[];
   targetCategories?: StoreCategory[];
   targetStates?: string[];
