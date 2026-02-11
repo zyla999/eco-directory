@@ -7,7 +7,7 @@ import { Metadata } from "next";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ecodirectory.ca";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://eco-directory.com";
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
