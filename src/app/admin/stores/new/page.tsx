@@ -48,6 +48,7 @@ export default function NewStorePage() {
     lng: "",
     logo: "",
     offers_wholesale: false,
+    offers_local_delivery: false,
   });
 
   function toggleCategory(cat: string) {
@@ -95,6 +96,7 @@ export default function NewStorePage() {
       lng: form.lng ? parseFloat(form.lng) : null,
       logo: form.logo || null,
       offers_wholesale: form.offers_wholesale,
+      offers_local_delivery: form.offers_local_delivery,
     });
 
     if (dbError) {
@@ -186,8 +188,8 @@ export default function NewStorePage() {
           </div>
         </div>
 
-        {/* Status & Wholesale */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Status & Flags */}
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
@@ -209,6 +211,17 @@ export default function NewStorePage() {
                 className="rounded border-gray-300 text-amber-600"
               />
               <span className="text-sm text-gray-700">Offers Wholesale</span>
+            </label>
+          </div>
+          <div className="flex items-end pb-1">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.offers_local_delivery}
+                onChange={(e) => setForm({ ...form, offers_local_delivery: e.target.checked })}
+                className="rounded border-gray-300 text-teal-600"
+              />
+              <span className="text-sm text-gray-700">Local Delivery</span>
             </label>
           </div>
         </div>

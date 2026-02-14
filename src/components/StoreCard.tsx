@@ -11,8 +11,34 @@ export default function StoreCard({ store }: StoreCardProps) {
   return (
     <Link
       href={`/stores/${store.id}`}
-      className="block h-full bg-white rounded-lg shadow-sm border border-gray-200 card-hover-lift overflow-hidden"
+      className="relative block h-full bg-white rounded-lg shadow-sm border border-gray-200 card-hover-lift overflow-hidden"
     >
+      {/* Corner icon badges */}
+      {(store.offersWholesale || store.offersLocalDelivery) && (
+        <div className="absolute top-2 right-2 z-10 flex flex-col gap-1.5">
+          {store.offersWholesale && (
+            <span
+              className="badge-tooltip flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 border border-amber-200 shadow-sm"
+              data-tip="Offers Wholesale"
+            >
+              <svg className="w-3.5 h-3.5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </span>
+          )}
+          {store.offersLocalDelivery && (
+            <span
+              className="badge-tooltip flex items-center justify-center w-7 h-7 rounded-full bg-teal-100 border border-teal-200 shadow-sm"
+              data-tip="Offers Local Delivery"
+            >
+              <svg className="w-3.5 h-3.5 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+              </svg>
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -50,11 +76,6 @@ export default function StoreCard({ store }: StoreCardProps) {
               {category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
             </span>
           ))}
-          {store.offersWholesale && (
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
-              Wholesale Available
-            </span>
-          )}
         </div>
 
         {store.website && (

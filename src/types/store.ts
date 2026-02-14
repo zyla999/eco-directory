@@ -81,6 +81,7 @@ export interface Store {
   priceLevel?: number;
   features?: string[];
   offersWholesale?: boolean;
+  offersLocalDelivery?: boolean;
   createdAt: string;
   updatedAt?: string;
   lastVerifiedAt: string;
