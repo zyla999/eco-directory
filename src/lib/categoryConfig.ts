@@ -12,6 +12,32 @@ export const categoryColors: Record<StoreCategory | string, string> = {
   apothecary: "bg-lime-100 text-lime-800",
 };
 
+// Saturated hex colors for map pins
+export const categoryPinColors: Record<StoreCategory | string, string> = {
+  refillery: "#2563eb",
+  "bulk-foods": "#d97706",
+  "zero-waste": "#059669",
+  "thrift-consignment": "#7c3aed",
+  "farmers-market": "#ea580c",
+  manufacturer: "#4f46e5",
+  wholesale: "#0d9488",
+  "service-provider": "#e11d48",
+  apothecary: "#65a30d",
+};
+
+// Human-readable category labels for legends
+export const categoryLabels: Record<StoreCategory | string, string> = {
+  refillery: "Refillery",
+  "bulk-foods": "Bulk Foods",
+  "zero-waste": "Zero Waste",
+  "thrift-consignment": "Thrift & Consignment",
+  "farmers-market": "Farmers Market",
+  manufacturer: "Manufacturer",
+  wholesale: "Wholesale",
+  "service-provider": "Service Provider",
+  apothecary: "Apothecary",
+};
+
 export const categoryIcons: Record<string, string> = {
   droplet: "💧",
   wheat: "🌾",

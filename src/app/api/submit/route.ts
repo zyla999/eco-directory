@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const NOTIFY_EMAIL = "zyla999@hotmail.com";
 
 export async function POST(request: Request) {
   try {
@@ -43,6 +47,28 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    // Send email notification (don't block the response if it fails)
+    const location = city && state ? `${city}, ${state}, ${country}` : "Online";
+    resend.emails.send({
+      from: "Eco Directory <onboarding@resend.dev>",
+      to: NOTIFY_EMAIL,
+      subject: `New Business Submission: ${name}`,
+      html: `
+        <h2>New Business Submission</h2>
+        <table style="border-collapse:collapse;width:100%;max-width:500px;">
+          <tr><td style="padding:6px 12px;font-weight:bold;">Name</td><td style="padding:6px 12px;">${name}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;">Type</td><td style="padding:6px 12px;">${type || "brick-and-mortar"}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;">Location</td><td style="padding:6px 12px;">${location}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;">Categories</td><td style="padding:6px 12px;">${categories.join(", ")}</td></tr>
+          ${website ? `<tr><td style="padding:6px 12px;font-weight:bold;">Website</td><td style="padding:6px 12px;">${website}</td></tr>` : ""}
+          ${email ? `<tr><td style="padding:6px 12px;font-weight:bold;">Email</td><td style="padding:6px 12px;">${email}</td></tr>` : ""}
+          ${phone ? `<tr><td style="padding:6px 12px;font-weight:bold;">Phone</td><td style="padding:6px 12px;">${phone}</td></tr>` : ""}
+        </table>
+        <p style="margin-top:16px;"><strong>Description:</strong><br/>${description}</p>
+        <p style="margin-top:16px;color:#666;font-size:13px;">This submission needs review in the admin panel.</p>
+      `,
+    }).catch((err) => console.error("Email notification failed:", err));
 
     return NextResponse.json({ success: true });
   } catch {
