@@ -1,6 +1,7 @@
 import SearchBar from "@/components/SearchBar";
 import StoreCard from "@/components/StoreCard";
-import AnimateOnScroll from "@/components/AnimateOnScroll";
+import CategoryFilter from "@/components/CategoryFilter";
+import StateProvinceFilter from "@/components/StateProvinceFilter";
 import {
   getAllStores,
   searchStores,
@@ -11,7 +12,7 @@ import {
 export const revalidate = 3600;
 
 interface StoresPageProps {
-  searchParams: Promise<{ q?: string; category?: string; state?: string; wholesale?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; state?: string; wholesale?: string; delivery?: string }>;
 }
 
 export default async function StoresPage({ searchParams }: StoresPageProps) {
@@ -20,18 +21,27 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const categoryFilter = params.category || "";
   const stateFilter = params.state || "";
   const wholesaleFilter = params.wholesale === "true";
+  const deliveryFilter = params.delivery === "true";
+
+  const selectedCategories = categoryFilter
+    ? categoryFilter.split(",").map((c) => c.trim()).filter(Boolean)
+    : [];
+
+  const selectedStates = stateFilter
+    ? stateFilter.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)
+    : [];
 
   let stores = query ? await searchStores(query) : await getAllStores();
 
-  if (categoryFilter) {
+  if (selectedCategories.length > 0) {
     stores = stores.filter((s) =>
-      s.categories.includes(categoryFilter as any)
+      s.categories.some((c) => selectedCategories.includes(c))
     );
   }
 
-  if (stateFilter) {
-    stores = stores.filter(
-      (s) => s.location.state.toLowerCase() === stateFilter.toLowerCase()
+  if (selectedStates.length > 0) {
+    stores = stores.filter((s) =>
+      selectedStates.includes(s.location.state.toUpperCase())
     );
   }
 
@@ -39,8 +49,24 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
     stores = stores.filter((s) => s.offersWholesale);
   }
 
+  if (deliveryFilter) {
+    stores = stores.filter((s) => s.offersLocalDelivery);
+  }
+
   const categories = await getCategories();
   const statesWithStores = await getStatesWithStores();
+
+  // Base params for CategoryFilter (everything except category)
+  const categoryBaseParams: Record<string, string> = {};
+  if (stateFilter) categoryBaseParams.state = stateFilter;
+  if (wholesaleFilter) categoryBaseParams.wholesale = "true";
+  if (deliveryFilter) categoryBaseParams.delivery = "true";
+
+  // Base params for StateProvinceFilter (everything except state)
+  const stateBaseParams: Record<string, string> = {};
+  if (categoryFilter) stateBaseParams.category = categoryFilter;
+  if (wholesaleFilter) stateBaseParams.wholesale = "true";
+  if (deliveryFilter) stateBaseParams.delivery = "true";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -49,52 +75,29 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
         <SearchBar initialQuery={query} />
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
         {/* Filters Sidebar */}
-        <AnimateOnScroll animation="slide-in-left">
           <aside className="lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="font-semibold text-gray-900 mb-4">Filters</h3>
 
               {/* Category Filter */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
-                  Category
-                </h4>
-                <div className="space-y-2">
-                  <a
-                    href="/stores"
-                    className={`block text-sm ${
-                      !categoryFilter
-                        ? "text-green-600 font-medium"
-                        : "text-gray-600 hover:text-green-600"
-                    }`}
-                  >
-                    All Categories
-                  </a>
-                  {categories.map((cat) => (
-                    <a
-                      key={cat.id}
-                      href={`/category/${cat.id}`}
-                      className={`block text-sm ${
-                        categoryFilter === cat.id
-                          ? "text-green-600 font-medium"
-                          : "text-gray-600 hover:text-green-600"
-                      }`}
-                    >
-                      {cat.name}
-                    </a>
-                  ))}
-                </div>
+                <CategoryFilter
+                  categories={categories}
+                  selectedCategories={selectedCategories}
+                  baseParams={categoryBaseParams}
+                />
               </div>
 
-              {/* Wholesale Filter */}
-              <div className="mb-6">
+              {/* Wholesale & Delivery Filters */}
+              <div className="mb-5 -mx-6 px-6 py-3 bg-gray-50 border-y border-gray-100 space-y-2.5">
                 <a
                   href={`/stores?${[
                     categoryFilter ? `category=${categoryFilter}` : "",
                     stateFilter ? `state=${stateFilter}` : "",
                     !wholesaleFilter ? "wholesale=true" : "",
+                    deliveryFilter ? "delivery=true" : "",
                   ].filter(Boolean).join("&")}`}
                   className={`flex items-center gap-2 text-sm ${
                     wholesaleFilter
@@ -102,67 +105,55 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
                       : "text-gray-600 hover:text-amber-700"
                   }`}
                 >
-                  <span className={`inline-block w-4 h-4 rounded border ${
+                  <span className={`inline-block w-3.5 h-3.5 rounded border ${
                     wholesaleFilter
                       ? "bg-amber-500 border-amber-500"
                       : "border-gray-300"
                   }`}>
                     {wholesaleFilter && (
-                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     )}
                   </span>
                   Wholesale Available
                 </a>
+                <a
+                  href={`/stores?${[
+                    categoryFilter ? `category=${categoryFilter}` : "",
+                    stateFilter ? `state=${stateFilter}` : "",
+                    wholesaleFilter ? "wholesale=true" : "",
+                    !deliveryFilter ? "delivery=true" : "",
+                  ].filter(Boolean).join("&")}`}
+                  className={`flex items-center gap-2 text-sm ${
+                    deliveryFilter
+                      ? "text-teal-700 font-medium"
+                      : "text-gray-600 hover:text-teal-700"
+                  }`}
+                >
+                  <span className={`inline-block w-3.5 h-3.5 rounded border ${
+                    deliveryFilter
+                      ? "bg-teal-500 border-teal-500"
+                      : "border-gray-300"
+                  }`}>
+                    {deliveryFilter && (
+                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </span>
+                  Offers Local Delivery
+                </a>
               </div>
 
-              {/* State Filter */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
-                  State/Province
-                </h4>
-                <div className="space-y-2">
-                  <a
-                    href={`/stores${
-                      categoryFilter ? `?category=${categoryFilter}` : ""
-                    }`}
-                    className={`block text-sm ${
-                      !stateFilter
-                        ? "text-green-600 font-medium"
-                        : "text-gray-600 hover:text-green-600"
-                    }`}
-                  >
-                    All Locations
-                  </a>
-                  {statesWithStores.map((si) => (
-                    <div key={si.stateCode} className="flex items-center justify-between">
-                      <a
-                        href={`/stores?state=${si.stateCode}${
-                          categoryFilter ? `&category=${categoryFilter}` : ""
-                        }`}
-                        className={`block text-sm ${
-                          stateFilter === si.stateCode
-                            ? "text-green-600 font-medium"
-                            : "text-gray-600 hover:text-green-600"
-                        }`}
-                      >
-                        {si.stateCode}
-                      </a>
-                      <a
-                        href={`/location/${si.slug}`}
-                        className="text-xs text-gray-400 hover:text-green-600"
-                        title={`View all businesses in ${si.stateName}`}
-                      >
-                        View page →
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {/* State/Province Filter */}
+              <StateProvinceFilter
+                statesWithStores={statesWithStores}
+                selectedStates={selectedStates}
+                baseParams={stateBaseParams}
+              />
             </div>
           </aside>
-        </AnimateOnScroll>
 
         {/* Store Grid */}
         <div className="flex-1">
@@ -174,9 +165,15 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
           {stores.length > 0 ? (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {stores.map((store, i) => (
-                <AnimateOnScroll key={store.id} animation="fade-in-up" stagger={Math.min((i % 6) + 1, 7)} className="h-full">
+                <div
+                  key={store.id}
+                  className="h-full"
+                  style={{
+                    animation: `fade-in-up 0.5s ease-out ${(i % 6) * 0.08}s both`,
+                  }}
+                >
                   <StoreCard store={store} />
-                </AnimateOnScroll>
+                </div>
               ))}
             </div>
           ) : (

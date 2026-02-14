@@ -47,4 +47,5 @@ export const categoryIcons: Record<string, string> = {
   factory: "🏭",
   truck: "🚛",
   briefcase: "💼",
+  mortar: "🧪",
 };

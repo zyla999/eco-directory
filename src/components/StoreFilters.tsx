@@ -25,7 +25,7 @@ interface StoreFiltersProps {
 }
 
 const PILL_GROUPS: Record<string, StoreCategory[]> = {
-  Shop: ["refillery", "bulk-foods", "zero-waste", "thrift-consignment", "farmers-market"],
+  Shop: ["refillery", "bulk-foods", "zero-waste", "thrift-consignment", "farmers-market", "apothecary"],
   Supplier: ["manufacturer", "wholesale"],
   Service: ["service-provider"],
 };

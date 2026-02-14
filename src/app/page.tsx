@@ -81,7 +81,7 @@ export default async function Home() {
               Browse by Category
             </h2>
           </AnimateOnScroll>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {categoryCounts.map(({ category, count }, i) => (
               <AnimateOnScroll key={category.id} animation="fade-in-up" stagger={Math.min(i + 1, 8)} className="h-full">
                 <CategoryCard

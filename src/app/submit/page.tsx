@@ -34,6 +34,11 @@ export default function SubmitPage() {
     postalCode: "",
     instagram: "",
     facebook: "",
+    twitter: "",
+    tiktok: "",
+    pinterest: "",
+    offersWholesale: false,
+    offersLocalDelivery: false,
   });
 
   const handleCategoryChange = (categoryId: StoreCategory) => {
@@ -225,6 +230,32 @@ export default function SubmitPage() {
                   <span className="text-sm text-gray-700">Both</span>
                 </label>
               </div>
+            </div>
+
+            {/* Wholesale & Delivery */}
+            <div className="flex flex-wrap gap-6 pt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.offersWholesale}
+                  onChange={(e) =>
+                    setFormData({ ...formData, offersWholesale: e.target.checked })
+                  }
+                  className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                />
+                <span className="text-sm text-gray-700">Offers Wholesale</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.offersLocalDelivery}
+                  onChange={(e) =>
+                    setFormData({ ...formData, offersLocalDelivery: e.target.checked })
+                  }
+                  className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                />
+                <span className="text-sm text-gray-700">Offers Local Delivery</span>
+              </label>
             </div>
           </div>
         </section>
@@ -423,7 +454,7 @@ export default function SubmitPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, instagram: e.target.value })
                 }
-                placeholder="@yourstore"
+                placeholder="@yourstore or URL"
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
               />
             </div>
@@ -441,7 +472,61 @@ export default function SubmitPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, facebook: e.target.value })
                 }
-                placeholder="yourstore"
+                placeholder="Page name or URL"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="twitter"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Twitter / X
+              </label>
+              <input
+                type="text"
+                id="twitter"
+                value={formData.twitter}
+                onChange={(e) =>
+                  setFormData({ ...formData, twitter: e.target.value })
+                }
+                placeholder="@yourstore or URL"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="tiktok"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                TikTok
+              </label>
+              <input
+                type="text"
+                id="tiktok"
+                value={formData.tiktok}
+                onChange={(e) =>
+                  setFormData({ ...formData, tiktok: e.target.value })
+                }
+                placeholder="@yourstore or URL"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="pinterest"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Pinterest
+              </label>
+              <input
+                type="text"
+                id="pinterest"
+                value={formData.pinterest}
+                onChange={(e) =>
+                  setFormData({ ...formData, pinterest: e.target.value })
+                }
+                placeholder="@yourstore or URL"
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
               />
             </div>

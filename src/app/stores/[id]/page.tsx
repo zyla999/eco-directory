@@ -62,7 +62,29 @@ export default async function StorePage({ params }: StorePageProps) {
         </ol>
       </nav>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        {/* Corner badges */}
+        {(store.offersWholesale || store.offersLocalDelivery) && (
+          <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+            {store.offersWholesale && (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-amber-100 border border-amber-200 text-amber-800 shadow-sm">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                Wholesale
+              </span>
+            )}
+            {store.offersLocalDelivery && (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 border border-teal-200 text-teal-800 shadow-sm">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                </svg>
+                Local Delivery
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="p-8">
           {/* Header */}
           <AnimateOnScroll animation="fade-in-up">
@@ -70,9 +92,9 @@ export default async function StorePage({ params }: StorePageProps) {
               <Image
                 src={store.logo || "/logos/default.svg"}
                 alt={`${store.name} logo`}
-                width={80}
-                height={80}
-                className="w-20 h-20 object-contain rounded-lg border border-gray-200"
+                width={160}
+                height={160}
+                className="w-40 h-40 object-contain rounded-lg border border-gray-200"
               />
               <div className="flex-1">
                 <h1 className="text-3xl font-bold text-gray-900">{store.name}</h1>
@@ -92,22 +114,6 @@ export default async function StorePage({ params }: StorePageProps) {
                       {category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                     </Link>
                   ))}
-                  {store.offersWholesale && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full bg-amber-100 text-amber-800">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                      </svg>
-                      Wholesale Available
-                    </span>
-                  )}
-                  {store.offersLocalDelivery && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full bg-teal-100 text-teal-800">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                      </svg>
-                      Local Delivery
-                    </span>
-                  )}
                   <span className="text-gray-300">|</span>
                   {store.type.includes("brick-and-mortar") && (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">

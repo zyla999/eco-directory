@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { name, description, categories, type, website, email, phone, address, city, state, country, postalCode, instagram, facebook } = body;
+    const { name, description, categories, type, website, email, phone, address, city, state, country, postalCode, instagram, facebook, twitter, tiktok, pinterest, offersWholesale, offersLocalDelivery } = body;
 
     if (!name || !description || !categories || categories.length === 0) {
       return NextResponse.json(
@@ -41,6 +41,11 @@ export async function POST(request: Request) {
       postal_code: postalCode || null,
       instagram: instagram || null,
       facebook: facebook || null,
+      twitter: twitter || null,
+      tiktok: tiktok || null,
+      pinterest: pinterest || null,
+      offers_wholesale: offersWholesale || false,
+      offers_local_delivery: offersLocalDelivery || false,
       status: "needs-review",
       source: "public-submission",
     });
