@@ -36,6 +36,7 @@ export interface StoreLocation {
   id?: string;
   label?: string;
   address?: string;
+  addressLine2?: string;
   city: string;
   state: string;
   country: "USA" | "Canada";
@@ -73,6 +74,8 @@ export interface Store {
   twitter?: string;
   tiktok?: string;
   pinterest?: string;
+  youtube?: string;
+  linkedin?: string;
   location: StoreLocation;
   additionalLocations?: StoreLocation[];
   featured?: boolean;

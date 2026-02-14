@@ -153,15 +153,15 @@ function makeId(name: string, city: string, address?: string): string {
 function parseCategories(raw: string): string[] {
   if (!raw) return [];
   return raw
-    .split(/[,;]/)
+    .split(/[,;|]/)
     .map((c) => c.trim().toLowerCase().replace(/\s+/g, "-"))
     .filter(Boolean);
 }
 
 const EXPECTED_HEADERS = [
   "name", "description", "categories", "type", "website", "email", "phone",
-  "instagram", "facebook", "twitter", "tiktok",
-  "address", "city", "state", "country", "postal_code", "offers_wholesale", "pinterest",
+  "instagram", "facebook", "twitter", "tiktok", "pinterest", "youtube", "linkedin",
+  "address", "city", "state", "country", "postal_code", "offers_wholesale", "offers_local_delivery",
 ];
 
 export default function ImportPage() {
@@ -234,7 +234,7 @@ export default function ImportPage() {
         description: row.description?.trim() || null,
         categories,
         type: ["brick-and-mortar", "online", "both", "mobile"].includes(type) ? type : "brick-and-mortar",
-        status: "active" as const,
+        status: "needs-review" as const,
         website: row.website?.trim() || null,
         email: row.email?.trim() || null,
         phone: row.phone?.trim() || null,
@@ -243,6 +243,8 @@ export default function ImportPage() {
         twitter: row.twitter?.trim() || null,
         tiktok: row.tiktok?.trim() || null,
         pinterest: row.pinterest?.trim() || null,
+        youtube: row.youtube?.trim() || null,
+        linkedin: row.linkedin?.trim() || null,
         address: address || null,
         city: city || null,
         state: state || null,
@@ -251,6 +253,7 @@ export default function ImportPage() {
         lat,
         lng,
         offers_wholesale: row.offers_wholesale?.toLowerCase() === "true" || row.offers_wholesale === "1",
+        offers_local_delivery: row.offers_local_delivery?.toLowerCase() === "true" || row.offers_local_delivery === "1",
         created_at: now,
         last_verified_at: now,
         source: "csv-import",

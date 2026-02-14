@@ -37,6 +37,8 @@ export default function SubmitPage() {
     twitter: "",
     tiktok: "",
     pinterest: "",
+    youtube: "",
+    linkedin: "",
     offersWholesale: false,
     offersLocalDelivery: false,
   });
@@ -527,6 +529,42 @@ export default function SubmitPage() {
                   setFormData({ ...formData, pinterest: e.target.value })
                 }
                 placeholder="@yourstore or URL"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="youtube"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                YouTube
+              </label>
+              <input
+                type="text"
+                id="youtube"
+                value={formData.youtube}
+                onChange={(e) =>
+                  setFormData({ ...formData, youtube: e.target.value })
+                }
+                placeholder="Channel URL"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="linkedin"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                LinkedIn
+              </label>
+              <input
+                type="text"
+                id="linkedin"
+                value={formData.linkedin}
+                onChange={(e) =>
+                  setFormData({ ...formData, linkedin: e.target.value })
+                }
+                placeholder="Company or profile URL"
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
               />
             </div>

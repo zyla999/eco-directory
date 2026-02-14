@@ -158,9 +158,12 @@ export default async function StorePage({ params }: StorePageProps) {
                 <div className="space-y-4">
                   <div className="space-y-1 text-gray-600">
                     {store.additionalLocations && store.additionalLocations.length > 0 && (
-                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Primary</p>
+                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+                        {store.location.label || "Primary"}
+                      </p>
                     )}
                     {store.location.address && <p>{store.location.address}</p>}
+                    {store.location.addressLine2 && <p>{store.location.addressLine2}</p>}
                     <p>
                       {store.location.city}, {store.location.state}{" "}
                       {store.location.postalCode}
@@ -173,6 +176,7 @@ export default async function StorePage({ params }: StorePageProps) {
                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{loc.label}</p>
                       )}
                       {loc.address && <p>{loc.address}</p>}
+                      {loc.addressLine2 && <p>{loc.addressLine2}</p>}
                       <p>
                         {loc.city}, {loc.state} {loc.postalCode}
                       </p>
@@ -264,7 +268,7 @@ export default async function StorePage({ params }: StorePageProps) {
           </AnimateOnScroll>
 
           {/* Social Links */}
-          {(store.instagram || store.facebook || store.twitter || store.tiktok || store.pinterest) && (
+          {(store.instagram || store.facebook || store.twitter || store.tiktok || store.pinterest || store.youtube || store.linkedin) && (
             <AnimateOnScroll animation="slide-in-right">
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">
@@ -353,6 +357,40 @@ export default async function StorePage({ params }: StorePageProps) {
                         viewBox="0 0 24 24"
                       >
                         <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z" />
+                      </svg>
+                    </a>
+                  )}
+                  {store.youtube && (
+                    <a
+                      href={store.youtube.startsWith("http") ? store.youtube : `https://youtube.com/${store.youtube}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-red-500"
+                    >
+                      <span className="sr-only">YouTube</span>
+                      <svg
+                        className="w-6 h-6"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                      </svg>
+                    </a>
+                  )}
+                  {store.linkedin && (
+                    <a
+                      href={store.linkedin.startsWith("http") ? store.linkedin : `https://linkedin.com/company/${store.linkedin}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-blue-700"
+                    >
+                      <span className="sr-only">LinkedIn</span>
+                      <svg
+                        className="w-6 h-6"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                       </svg>
                     </a>
                   )}

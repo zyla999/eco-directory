@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 interface AdditionalLocation {
   label: string;
   address: string;
+  address_line_2: string;
   city: string;
   state: string;
   country: string;
@@ -17,7 +18,7 @@ interface AdditionalLocation {
 }
 
 function emptyLocation(): AdditionalLocation {
-  return { label: "", address: "", city: "", state: "", country: "USA", postal_code: "", lat: "", lng: "", phone: "" };
+  return { label: "", address: "", address_line_2: "", city: "", state: "", country: "USA", postal_code: "", lat: "", lng: "", phone: "" };
 }
 
 const CATEGORIES = [
@@ -62,7 +63,11 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     twitter: "",
     tiktok: "",
     pinterest: "",
+    youtube: "",
+    linkedin: "",
+    location_label: "",
     address: "",
+    address_line_2: "",
     city: "",
     state: "",
     country: "USA",
@@ -96,7 +101,11 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           twitter: data.twitter || "",
           tiktok: data.tiktok || "",
           pinterest: data.pinterest || "",
+          youtube: data.youtube || "",
+          linkedin: data.linkedin || "",
+          location_label: data.location_label || "",
           address: data.address || "",
+          address_line_2: data.address_line_2 || "",
           city: data.city || "",
           state: data.state || "",
           country: data.country || "USA",
@@ -120,6 +129,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           locData.map((r: any) => ({
             label: r.label || "",
             address: r.address || "",
+            address_line_2: r.address_line_2 || "",
             city: r.city || "",
             state: r.state || "",
             country: r.country || "USA",
@@ -163,7 +173,11 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
       twitter: form.twitter || null,
       tiktok: form.tiktok || null,
       pinterest: form.pinterest || null,
+      youtube: form.youtube || null,
+      linkedin: form.linkedin || null,
+      location_label: form.location_label || null,
       address: form.address || null,
+      address_line_2: form.address_line_2 || null,
       city: form.city,
       state: form.state,
       country: form.country,
@@ -193,6 +207,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
         store_id: id,
         label: loc.label || null,
         address: loc.address || null,
+        address_line_2: loc.address_line_2 || null,
         city: loc.city,
         state: loc.state,
         country: loc.country || "USA",
@@ -224,252 +239,198 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
         <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-          <input
-            type="text"
-            required
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            rows={3}
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
-          />
-        </div>
-
-        {/* Categories */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Categories *</label>
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => toggleCategory(cat)}
-                className={`px-3 py-1 rounded-full text-sm transition ${
-                  form.categories.includes(cat)
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Type *</label>
-          <div className="flex flex-wrap gap-2">
-            {STORE_TYPES.map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() =>
-                  setForm((prev) => ({
-                    ...prev,
-                    types: prev.types.includes(t.value)
-                      ? prev.types.filter((v) => v !== t.value)
-                      : [...prev.types, t.value],
-                  }))
-                }
-                className={`px-3 py-1 rounded-full text-sm transition ${
-                  form.types.includes(t.value)
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Status & Flags */}
-        <div className="grid grid-cols-4 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* ── Identity ── */}
+        <fieldset className="space-y-4">
+          <legend className="text-xs font-bold text-gray-400 uppercase tracking-wider">Business Info</legend>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
-              <option value="active">Active</option>
-              <option value="needs-review">Needs Review</option>
-              <option value="closed">Closed</option>
-            </select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+            <input
+              type="text"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+            />
           </div>
-          <div className="flex items-end pb-1">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.featured}
-                onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-                className="rounded border-gray-300 text-green-600"
-              />
-              <span className="text-sm text-gray-700">Featured</span>
-            </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              rows={3}
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+            />
           </div>
-          <div className="flex items-end pb-1">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.offers_wholesale}
-                onChange={(e) => setForm({ ...form, offers_wholesale: e.target.checked })}
-                className="rounded border-gray-300 text-amber-600"
-              />
-              <span className="text-sm text-gray-700">Offers Wholesale</span>
-            </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
+            {form.logo ? (
+              <div className="flex items-center gap-3">
+                <img
+                  src={form.logo.includes("?") ? form.logo : `${form.logo}?t=${Date.now()}`}
+                  alt="Current logo"
+                  className="w-16 h-16 object-contain rounded border border-gray-200"
+                />
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, logo: "" }))}
+                  className="text-xs text-red-600 hover:text-red-700"
+                >
+                  Remove logo
+                </button>
+              </div>
+            ) : (
+              <>
+                <input
+                  key={form.logo}
+                  type="file"
+                  accept="image/svg+xml,image/png,image/jpeg,image/webp"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setError("");
+                    const ext = file.name.split(".").pop()?.toLowerCase() || "svg";
+                    const filename = `${id}-${Date.now()}.${ext}`;
+                    const supabase = createClient();
+                    const { error: uploadErr } = await supabase.storage
+                      .from("logos")
+                      .upload(filename, file, { contentType: file.type, upsert: true });
+                    if (uploadErr) {
+                      setError(`Logo upload failed: ${uploadErr.message}`);
+                      return;
+                    }
+                    const { data: { publicUrl } } = supabase.storage
+                      .from("logos")
+                      .getPublicUrl(filename);
+                    setForm((prev) => ({ ...prev, logo: publicUrl }));
+                  }}
+                  className="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:font-medium hover:file:bg-green-100"
+                />
+                <p className="text-xs text-gray-400 mt-1">SVG, PNG, JPEG, or WebP (max 2MB)</p>
+              </>
+            )}
           </div>
-          <div className="flex items-end pb-1">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.offers_local_delivery}
-                onChange={(e) => setForm({ ...form, offers_local_delivery: e.target.checked })}
-                className="rounded border-gray-300 text-teal-600"
-              />
-              <span className="text-sm text-gray-700">Local Delivery</span>
-            </label>
-          </div>
-        </div>
+        </fieldset>
 
-        {/* Logo */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
-          {form.logo && (
-            <div className="mb-2 flex items-center gap-3">
-              <img
-                src={form.logo.includes("?") ? form.logo : `${form.logo}?t=${Date.now()}`}
-                alt="Current logo"
-                className="w-16 h-16 object-contain rounded border border-gray-200"
-              />
-              <button
-                type="button"
-                onClick={() => setForm((prev) => ({ ...prev, logo: "" }))}
-                className="text-xs text-red-600 hover:text-red-700"
-              >
-                Remove logo
-              </button>
+        <hr className="border-gray-200" />
+
+        {/* ── Location ── */}
+        <fieldset className="space-y-4">
+          <legend className="text-xs font-bold text-gray-400 uppercase tracking-wider">Location</legend>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Location Label</label>
+            <input type="text" value={form.location_label} onChange={(e) => setForm({ ...form, location_label: e.target.value })} placeholder="e.g. Main Store, Headquarters" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
+            <input type="text" value={form.address_line_2} onChange={(e) => setForm({ ...form, address_line_2: e.target.value })} placeholder="Unit, suite, floor, mall name, etc." className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">City{form.types.includes("brick-and-mortar") && " *"}</label>
+              <input type="text" required={form.types.includes("brick-and-mortar")} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
             </div>
-          )}
-          <input
-            key={form.logo}
-            type="file"
-            accept="image/svg+xml,image/png,image/jpeg,image/webp"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              setError("");
-              const ext = file.name.split(".").pop()?.toLowerCase() || "svg";
-              const filename = `${id}-${Date.now()}.${ext}`;
-              const supabase = createClient();
-              const { error: uploadErr } = await supabase.storage
-                .from("logos")
-                .upload(filename, file, { contentType: file.type, upsert: true });
-              if (uploadErr) {
-                setError(`Logo upload failed: ${uploadErr.message}`);
-                return;
-              }
-              const { data: { publicUrl } } = supabase.storage
-                .from("logos")
-                .getPublicUrl(filename);
-              setForm((prev) => ({ ...prev, logo: publicUrl }));
-            }}
-            className="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:font-medium hover:file:bg-green-100"
-          />
-          <p className="text-xs text-gray-400 mt-1">SVG, PNG, JPEG, or WebP (max 2MB)</p>
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">State{form.types.includes("brick-and-mortar") && " *"}</label>
+              <input type="text" required={form.types.includes("brick-and-mortar")} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+              <select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <option value="USA">USA</option>
+                <option value="Canada">Canada</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+              <input type="text" value={form.postal_code} onChange={(e) => setForm({ ...form, postal_code: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+              <input type="text" value={form.lat} onChange={(e) => setForm({ ...form, lat: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+              <input type="text" value={form.lng} onChange={(e) => setForm({ ...form, lng: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+          </div>
 
-        {/* Contact */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
-            <input type="url" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-            <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-        </div>
-
-        {/* Social */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
-            <input type="text" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
-            <input type="text" value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="Full URL or page name" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Twitter / X</label>
-            <input type="text" value={form.twitter} onChange={(e) => setForm({ ...form, twitter: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">TikTok</label>
-            <input type="text" value={form.tiktok} onChange={(e) => setForm({ ...form, tiktok: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Pinterest</label>
-            <input type="text" value={form.pinterest} onChange={(e) => setForm({ ...form, pinterest: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-        </div>
-
-        {/* Location */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-          <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-            <input type="text" required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
-            <input type="text" required value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-            <select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
-              <option value="USA">USA</option>
-              <option value="Canada">Canada</option>
-            </select>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-            <input type="text" value={form.postal_code} onChange={(e) => setForm({ ...form, postal_code: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
-            <input type="text" value={form.lat} onChange={(e) => setForm({ ...form, lat: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
-            <input type="text" value={form.lng} onChange={(e) => setForm({ ...form, lng: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
-          </div>
-        </div>
-
-        {/* Additional Locations */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <label className="block text-sm font-medium text-gray-700">Additional Locations</label>
+          {/* Additional Locations */}
+          <div className="pt-2">
+            <label className="block text-sm font-medium text-gray-700 mb-3">Additional Locations</label>
+            {additionalLocations.map((loc, i) => (
+              <div key={i} className="border border-gray-200 rounded-lg p-4 mb-3 space-y-3 bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-600">Location {i + 2}</span>
+                  <button
+                    type="button"
+                    onClick={() => setAdditionalLocations(additionalLocations.filter((_, j) => j !== i))}
+                    className="text-xs text-red-600 hover:text-red-700"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Label</label>
+                    <input type="text" value={loc.label} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], label: e.target.value }; setAdditionalLocations(a); }} placeholder="e.g. Downtown Branch" className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Phone</label>
+                    <input type="tel" value={loc.phone} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], phone: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Address</label>
+                  <input type="text" value={loc.address} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], address: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Address Line 2</label>
+                  <input type="text" value={loc.address_line_2} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], address_line_2: e.target.value }; setAdditionalLocations(a); }} placeholder="Unit, suite, mall name, etc." className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">City *</label>
+                    <input type="text" value={loc.city} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], city: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">State *</label>
+                    <input type="text" value={loc.state} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], state: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Country</label>
+                    <select value={loc.country} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], country: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm">
+                      <option value="USA">USA</option>
+                      <option value="Canada">Canada</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Postal Code</label>
+                    <input type="text" value={loc.postal_code} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], postal_code: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Latitude</label>
+                    <input type="text" value={loc.lat} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], lat: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Longitude</label>
+                    <input type="text" value={loc.lng} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], lng: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                  </div>
+                </div>
+              </div>
+            ))}
             <button
               type="button"
               onClick={() => setAdditionalLocations([...additionalLocations, emptyLocation()])}
@@ -478,78 +439,166 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
               + Add Location
             </button>
           </div>
-          {additionalLocations.map((loc, i) => (
-            <div key={i} className="border border-gray-200 rounded-lg p-4 mb-3 space-y-3 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600">Location {i + 1}</span>
-                <button
-                  type="button"
-                  onClick={() => setAdditionalLocations(additionalLocations.filter((_, j) => j !== i))}
-                  className="text-xs text-red-600 hover:text-red-700"
-                >
-                  Remove
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Label</label>
-                  <input type="text" value={loc.label} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], label: e.target.value }; setAdditionalLocations(a); }} placeholder="e.g. Downtown Branch" className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Phone</label>
-                  <input type="tel" value={loc.phone} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], phone: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">Address</label>
-                <input type="text" value={loc.address} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], address: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">City *</label>
-                  <input type="text" value={loc.city} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], city: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">State *</label>
-                  <input type="text" value={loc.state} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], state: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Country</label>
-                  <select value={loc.country} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], country: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm">
-                    <option value="USA">USA</option>
-                    <option value="Canada">Canada</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Postal Code</label>
-                  <input type="text" value={loc.postal_code} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], postal_code: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Latitude</label>
-                  <input type="text" value={loc.lat} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], lat: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Longitude</label>
-                  <input type="text" value={loc.lng} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], lng: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        </fieldset>
 
-        {/* Review Notes */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Review Notes</label>
-          <textarea
-            rows={2}
-            value={form.review_notes}
-            onChange={(e) => setForm({ ...form, review_notes: e.target.value })}
-            placeholder="Internal notes about this listing..."
-            className="w-full rounded-lg border border-gray-300 px-4 py-2"
-          />
-        </div>
+        <hr className="border-gray-200" />
+
+        {/* ── Classification ── */}
+        <fieldset className="space-y-4">
+          <legend className="text-xs font-bold text-gray-400 uppercase tracking-wider">Classification</legend>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Categories *</label>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => toggleCategory(cat)}
+                  className={`px-3 py-1 rounded-full text-sm transition ${
+                    form.categories.includes(cat)
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Type *</label>
+            <div className="flex flex-wrap gap-2">
+              {STORE_TYPES.map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      types: prev.types.includes(t.value)
+                        ? prev.types.filter((v) => v !== t.value)
+                        : [...prev.types, t.value],
+                    }))
+                  }
+                  className={`px-3 py-1 rounded-full text-sm transition ${
+                    form.types.includes(t.value)
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </fieldset>
+
+        <hr className="border-gray-200" />
+
+        {/* ── Contact & Social ── */}
+        <fieldset className="space-y-4">
+          <legend className="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact & Social</legend>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
+              <input type="url" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+              <input type="text" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+              <input type="text" value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="Full URL or page name" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Twitter / X</label>
+              <input type="text" value={form.twitter} onChange={(e) => setForm({ ...form, twitter: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">TikTok</label>
+              <input type="text" value={form.tiktok} onChange={(e) => setForm({ ...form, tiktok: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Pinterest</label>
+              <input type="text" value={form.pinterest} onChange={(e) => setForm({ ...form, pinterest: e.target.value })} placeholder="URL or @handle" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">YouTube</label>
+              <input type="text" value={form.youtube} onChange={(e) => setForm({ ...form, youtube: e.target.value })} placeholder="Channel URL" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+              <input type="text" value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="Profile or company URL" className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+            </div>
+          </div>
+        </fieldset>
+
+        <hr className="border-gray-200" />
+
+        {/* ── Admin Settings ── */}
+        <fieldset className="space-y-4">
+          <legend className="text-xs font-bold text-gray-400 uppercase tracking-wider">Admin Settings</legend>
+          <div className="grid grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <option value="active">Active</option>
+                <option value="needs-review">Needs Review</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+            <div className="flex items-end pb-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.featured}
+                  onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                  className="rounded border-gray-300 text-green-600"
+                />
+                <span className="text-sm text-gray-700">Featured</span>
+              </label>
+            </div>
+            <div className="flex items-end pb-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.offers_wholesale}
+                  onChange={(e) => setForm({ ...form, offers_wholesale: e.target.checked })}
+                  className="rounded border-gray-300 text-amber-600"
+                />
+                <span className="text-sm text-gray-700">Wholesale</span>
+              </label>
+            </div>
+            <div className="flex items-end pb-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.offers_local_delivery}
+                  onChange={(e) => setForm({ ...form, offers_local_delivery: e.target.checked })}
+                  className="rounded border-gray-300 text-teal-600"
+                />
+                <span className="text-sm text-gray-700">Delivery</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Review Notes</label>
+            <textarea
+              rows={2}
+              value={form.review_notes}
+              onChange={(e) => setForm({ ...form, review_notes: e.target.value })}
+              placeholder="Internal notes about this listing..."
+              className="w-full rounded-lg border border-gray-300 px-4 py-2"
+            />
+          </div>
+        </fieldset>
 
         {/* Actions */}
         <div className="flex gap-3 pt-4">
