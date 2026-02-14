@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { Store, Category, Sponsor, AdPlacement } from "@/types/store";
+import { Store, StoreLocation, Category, Sponsor, AdPlacement } from "@/types/store";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 // ── Row → TypeScript transformers ──
@@ -77,6 +77,62 @@ function transformSponsor(row: any): Sponsor {
   };
 }
 
+function transformStoreLocation(row: any): StoreLocation {
+  return {
+    id: row.id,
+    label: row.label ?? undefined,
+    address: row.address ?? undefined,
+    city: row.city,
+    state: row.state,
+    country: row.country,
+    postalCode: row.postal_code ?? undefined,
+    coordinates:
+      row.lat != null && row.lng != null
+        ? { lat: row.lat, lng: row.lng }
+        : undefined,
+    phone: row.phone ?? undefined,
+  };
+}
+
+async function getAdditionalLocations(storeId: string): Promise<StoreLocation[]> {
+  const { data, error } = await supabaseAdmin
+    .from("store_locations")
+    .select("*")
+    .eq("store_id", storeId)
+    .order("created_at");
+
+  if (error) {
+    console.error("getAdditionalLocations error:", error);
+    return [];
+  }
+  return (data || []).map(transformStoreLocation);
+}
+
+export async function getAdditionalLocationsByStoreIds(
+  ids: string[]
+): Promise<Record<string, StoreLocation[]>> {
+  if (ids.length === 0) return {};
+
+  const { data, error } = await supabaseAdmin
+    .from("store_locations")
+    .select("*")
+    .in("store_id", ids)
+    .order("created_at");
+
+  if (error) {
+    console.error("getAdditionalLocationsByStoreIds error:", error);
+    return {};
+  }
+
+  const result: Record<string, StoreLocation[]> = {};
+  for (const row of data || []) {
+    const loc = transformStoreLocation(row);
+    if (!result[row.store_id]) result[row.store_id] = [];
+    result[row.store_id].push(loc);
+  }
+  return result;
+}
+
 // ── Store queries ──
 
 export const getAllStores = cache(async (): Promise<Store[]> => {
@@ -101,7 +157,10 @@ export const getStoreById = cache(async (id: string): Promise<Store | undefined>
     .single();
 
   if (error || !data) return undefined;
-  return transformStore(data);
+  const store = transformStore(data);
+  const additional = await getAdditionalLocations(id);
+  if (additional.length > 0) store.additionalLocations = additional;
+  return store;
 });
 
 export const getStoresByCategory = cache(async (category: string): Promise<Store[]> => {

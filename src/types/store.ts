@@ -33,6 +33,8 @@ export interface Sponsor {
 }
 
 export interface StoreLocation {
+  id?: string;
+  label?: string;
   address?: string;
   city: string;
   state: string;
@@ -43,6 +45,7 @@ export interface StoreLocation {
     lat: number;
     lng: number;
   };
+  phone?: string;
 }
 
 export interface StoreImage {
@@ -71,6 +74,7 @@ export interface Store {
   tiktok?: string;
   pinterest?: string;
   location: StoreLocation;
+  additionalLocations?: StoreLocation[];
   featured?: boolean;
   sponsored?: boolean;
   sponsorId?: string;

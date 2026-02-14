@@ -145,15 +145,39 @@ export default async function StorePage({ params }: StorePageProps) {
               {/* Location */}
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                  Location
+                  {store.additionalLocations && store.additionalLocations.length > 0
+                    ? "Locations"
+                    : "Location"}
                 </h2>
-                <div className="space-y-2 text-gray-600">
-                  {store.location.address && <p>{store.location.address}</p>}
-                  <p>
-                    {store.location.city}, {store.location.state}{" "}
-                    {store.location.postalCode}
-                  </p>
-                  <p>{store.location.country}</p>
+                <div className="space-y-4">
+                  <div className="space-y-1 text-gray-600">
+                    {store.additionalLocations && store.additionalLocations.length > 0 && (
+                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Primary</p>
+                    )}
+                    {store.location.address && <p>{store.location.address}</p>}
+                    <p>
+                      {store.location.city}, {store.location.state}{" "}
+                      {store.location.postalCode}
+                    </p>
+                    <p>{store.location.country}</p>
+                  </div>
+                  {store.additionalLocations?.map((loc, i) => (
+                    <div key={loc.id || i} className="space-y-1 text-gray-600 border-t border-gray-100 pt-3">
+                      {loc.label && (
+                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{loc.label}</p>
+                      )}
+                      {loc.address && <p>{loc.address}</p>}
+                      <p>
+                        {loc.city}, {loc.state} {loc.postalCode}
+                      </p>
+                      <p>{loc.country}</p>
+                      {loc.phone && (
+                        <a href={`tel:${loc.phone}`} className="text-green-600 hover:text-green-700 text-sm">
+                          {loc.phone}
+                        </a>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 

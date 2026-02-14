@@ -137,6 +137,34 @@ export default function Map({
       `);
 
       markersRef.current.addLayer(marker);
+
+      // Additional location markers
+      if (store.additionalLocations) {
+        store.additionalLocations.forEach((loc) => {
+          if (!loc.coordinates) return;
+          const addIcon = L.divIcon({
+            html: svg,
+            className: "",
+            iconSize: [28, 40],
+            iconAnchor: [14, 40],
+            popupAnchor: [0, -36],
+          });
+          const addMarker = L.marker(
+            [loc.coordinates.lat, loc.coordinates.lng],
+            { icon: addIcon }
+          );
+          const locLabel = loc.label ? `<span style="font-size:12px;color:#9ca3af;font-style:italic"> — ${loc.label}</span>` : "";
+          addMarker.bindPopup(`
+            <div style="min-width:200px">
+              <h3 style="font-weight:600;color:#111;margin:0">${store.name}${locLabel}</h3>
+              <p style="font-size:13px;color:#6b7280;margin:2px 0">${loc.city}, ${loc.state}</p>
+              <div style="display:flex;gap:4px;margin-top:6px">${categoryDots}</div>
+              <a href="/stores/${store.id}" style="font-size:13px;color:#16a34a;font-weight:500;margin-top:8px;display:inline-block">View details →</a>
+            </div>
+          `);
+          markersRef.current.addLayer(addMarker);
+        });
+      }
     });
   }, [leafletReady, stores]);
 

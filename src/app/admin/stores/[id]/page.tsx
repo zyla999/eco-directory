@@ -4,6 +4,22 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+interface AdditionalLocation {
+  label: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  lat: string;
+  lng: string;
+  phone: string;
+}
+
+function emptyLocation(): AdditionalLocation {
+  return { label: "", address: "", city: "", state: "", country: "USA", postal_code: "", lat: "", lng: "", phone: "" };
+}
+
 const CATEGORIES = [
   "refillery", "bulk-foods", "zero-waste", "thrift-consignment",
   "farmers-market", "manufacturer", "wholesale", "service-provider", "apothecary",
@@ -59,10 +75,12 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     offers_local_delivery: false,
     review_notes: "",
   });
+  const [additionalLocations, setAdditionalLocations] = useState<AdditionalLocation[]>([]);
 
   useEffect(() => {
     async function load() {
-      const { data } = await createClient().from("stores").select("*").eq("id", id).single();
+      const supabase = createClient();
+      const { data } = await supabase.from("stores").select("*").eq("id", id).single();
       if (data) {
         setForm({
           name: data.name || "",
@@ -91,6 +109,26 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
           offers_local_delivery: data.offers_local_delivery || false,
           review_notes: data.review_notes || "",
         });
+      }
+      const { data: locData } = await supabase
+        .from("store_locations")
+        .select("*")
+        .eq("store_id", id)
+        .order("created_at");
+      if (locData && locData.length > 0) {
+        setAdditionalLocations(
+          locData.map((r: any) => ({
+            label: r.label || "",
+            address: r.address || "",
+            city: r.city || "",
+            state: r.state || "",
+            country: r.country || "USA",
+            postal_code: r.postal_code || "",
+            lat: r.lat?.toString() || "",
+            lng: r.lng?.toString() || "",
+            phone: r.phone || "",
+          }))
+        );
       }
       setLoading(false);
     }
@@ -142,9 +180,38 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     if (dbError) {
       setError(dbError.message);
       setSaving(false);
-    } else {
-      router.push("/admin/stores");
+      return;
     }
+
+    // Save additional locations: delete all then re-insert
+    const supabase = createClient();
+    await supabase.from("store_locations").delete().eq("store_id", id);
+
+    const toInsert = additionalLocations
+      .filter((loc) => loc.city && loc.state)
+      .map((loc) => ({
+        store_id: id,
+        label: loc.label || null,
+        address: loc.address || null,
+        city: loc.city,
+        state: loc.state,
+        country: loc.country || "USA",
+        postal_code: loc.postal_code || null,
+        lat: loc.lat ? parseFloat(loc.lat) : null,
+        lng: loc.lng ? parseFloat(loc.lng) : null,
+        phone: loc.phone || null,
+      }));
+
+    if (toInsert.length > 0) {
+      const { error: locError } = await supabase.from("store_locations").insert(toInsert);
+      if (locError) {
+        setError(`Store saved but locations failed: ${locError.message}`);
+        setSaving(false);
+        return;
+      }
+    }
+
+    router.push("/admin/stores");
   }
 
   if (loading) return <p className="text-gray-500">Loading...</p>;
@@ -397,6 +464,79 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
             <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
             <input type="text" value={form.lng} onChange={(e) => setForm({ ...form, lng: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
           </div>
+        </div>
+
+        {/* Additional Locations */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="block text-sm font-medium text-gray-700">Additional Locations</label>
+            <button
+              type="button"
+              onClick={() => setAdditionalLocations([...additionalLocations, emptyLocation()])}
+              className="text-sm text-green-600 hover:text-green-700 font-medium"
+            >
+              + Add Location
+            </button>
+          </div>
+          {additionalLocations.map((loc, i) => (
+            <div key={i} className="border border-gray-200 rounded-lg p-4 mb-3 space-y-3 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">Location {i + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => setAdditionalLocations(additionalLocations.filter((_, j) => j !== i))}
+                  className="text-xs text-red-600 hover:text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Label</label>
+                  <input type="text" value={loc.label} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], label: e.target.value }; setAdditionalLocations(a); }} placeholder="e.g. Downtown Branch" className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Phone</label>
+                  <input type="tel" value={loc.phone} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], phone: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Address</label>
+                <input type="text" value={loc.address} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], address: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">City *</label>
+                  <input type="text" value={loc.city} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], city: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">State *</label>
+                  <input type="text" value={loc.state} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], state: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Country</label>
+                  <select value={loc.country} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], country: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm">
+                    <option value="USA">USA</option>
+                    <option value="Canada">Canada</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Postal Code</label>
+                  <input type="text" value={loc.postal_code} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], postal_code: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Latitude</label>
+                  <input type="text" value={loc.lat} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], lat: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Longitude</label>
+                  <input type="text" value={loc.lng} onChange={(e) => { const a = [...additionalLocations]; a[i] = { ...a[i], lng: e.target.value }; setAdditionalLocations(a); }} className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Review Notes */}
