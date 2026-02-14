@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const NOTIFY_EMAIL = "zyla999@hotmail.com";
+
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return new Resend(key);
+}
 
 export async function POST(request: Request) {
   try {
@@ -50,7 +55,8 @@ export async function POST(request: Request) {
 
     // Send email notification (don't block the response if it fails)
     const location = city && state ? `${city}, ${state}, ${country}` : "Online";
-    resend.emails.send({
+    const resend = getResend();
+    resend?.emails.send({
       from: "Eco Directory <onboarding@resend.dev>",
       to: NOTIFY_EMAIL,
       subject: `New Business Submission: ${name}`,
