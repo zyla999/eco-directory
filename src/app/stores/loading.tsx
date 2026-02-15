@@ -1,3 +1,6 @@
+const SIDEBAR_WIDTHS = ["85%", "72%", "90%", "78%", "95%", "80%"];
+const SIDEBAR_WIDTHS_SM = ["75%", "88%", "68%", "92%"];
+
 export default function StoresLoading() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -13,14 +16,14 @@ export default function StoresLoading() {
           <div className="rounded-lg p-6" style={{ background: "var(--eco-mist)" }}>
             <div className="skeleton-pulse h-5 w-16 rounded mb-4" />
             <div className="space-y-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="skeleton-pulse h-4 rounded" style={{ width: `${70 + Math.random() * 30}%` }} />
+              {SIDEBAR_WIDTHS.map((w, i) => (
+                <div key={i} className="skeleton-pulse h-4 rounded" style={{ width: w }} />
               ))}
             </div>
             <div className="skeleton-pulse h-px w-full my-5" />
             <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="skeleton-pulse h-4 rounded" style={{ width: `${60 + Math.random() * 40}%` }} />
+              {SIDEBAR_WIDTHS_SM.map((w, i) => (
+                <div key={i} className="skeleton-pulse h-4 rounded" style={{ width: w }} />
               ))}
             </div>
           </div>

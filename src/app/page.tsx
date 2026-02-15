@@ -148,7 +148,7 @@ export default async function Home() {
                 >
                   <div
                     style={{
-                      fontFamily: "'Fraunces', Georgia, serif",
+                      fontFamily: "var(--font-fraunces), Georgia, serif",
                       fontSize: '3.5rem',
                       lineHeight: 1,
                       color: '#1B3A2D',
@@ -183,7 +183,7 @@ export default async function Home() {
               <p className="eco-overline mb-4" style={{ color: '#7A756E' }}>Browse</p>
               <h2
                 style={{
-                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontFamily: "var(--font-fraunces), Georgia, serif",
                   fontSize: '2.25rem',
                   color: '#2A2A28',
                   letterSpacing: '-0.01em',
@@ -220,7 +220,7 @@ export default async function Home() {
               <p className="eco-overline mb-4" style={{ color: '#7A756E' }}>Locations</p>
               <h2
                 style={{
-                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontFamily: "var(--font-fraunces), Georgia, serif",
                   fontSize: '2.25rem',
                   color: '#2A2A28',
                   letterSpacing: '-0.01em',
@@ -316,7 +316,7 @@ export default async function Home() {
                 <p className="eco-overline mb-4" style={{ color: '#7A756E' }}>Featured</p>
                 <h2
                   style={{
-                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontFamily: "var(--font-fraunces), Georgia, serif",
                     fontSize: '2.25rem',
                     color: '#2A2A28',
                     letterSpacing: '-0.01em',
@@ -378,7 +378,7 @@ export default async function Home() {
               <h2
                 className="mb-5"
                 style={{
-                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontFamily: "var(--font-fraunces), Georgia, serif",
                   fontSize: 'clamp(2rem, 5vw, 3rem)',
                   lineHeight: 1.15,
                   letterSpacing: '-0.01em',

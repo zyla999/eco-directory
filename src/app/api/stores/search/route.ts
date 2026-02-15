@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const pattern = `%${q}%`;
 
   // Fetch matching stores (top 5)
-  const { data: storeRows } = await supabaseAdmin
+  const { data: storeRows, error: storeError } = await supabaseAdmin
     .from("stores")
     .select("id, name, city, state")
     .eq("status", "active")
@@ -18,8 +18,16 @@ export async function GET(request: NextRequest) {
     .order("name")
     .limit(5);
 
+  if (storeError) {
+    console.error("Search API: store query failed", { query: q, error: storeError });
+    return NextResponse.json(
+      { stores: [], cities: [], categories: [], error: "Search failed" },
+      { status: 500 }
+    );
+  }
+
   // Fetch matching cities (distinct, top 3)
-  const { data: cityRows } = await supabaseAdmin
+  const { data: cityRows, error: cityError } = await supabaseAdmin
     .from("stores")
     .select("city")
     .eq("status", "active")
@@ -27,14 +35,30 @@ export async function GET(request: NextRequest) {
     .order("city")
     .limit(20);
 
+  if (cityError) {
+    console.error("Search API: city query failed", { query: q, error: cityError });
+    return NextResponse.json(
+      { stores: [], cities: [], categories: [], error: "Search failed" },
+      { status: 500 }
+    );
+  }
+
   const uniqueCities = [...new Set((cityRows || []).map((r: { city: string }) => r.city))].slice(0, 3);
 
   // Fetch matching categories
-  const { data: catRows } = await supabaseAdmin
+  const { data: catRows, error: catError } = await supabaseAdmin
     .from("categories")
     .select("id, name")
     .ilike("name", pattern)
     .limit(3);
+
+  if (catError) {
+    console.error("Search API: category query failed", { query: q, error: catError });
+    return NextResponse.json(
+      { stores: [], cities: [], categories: [], error: "Search failed" },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({
     stores: (storeRows || []).map((r: { id: string; name: string; city: string; state: string }) => ({
