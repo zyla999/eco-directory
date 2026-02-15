@@ -75,7 +75,12 @@ async function main() {
     const address = row.address?.trim() || "";
     const id = makeId(name, city, address);
     const categories = parseCategories(row.categories || "");
-    const type = row.type?.trim().toLowerCase() || "brick-and-mortar";
+    const validTypes = ["brick-and-mortar", "online", "both", "mobile"];
+    const rawTypes = (row.type || "brick-and-mortar")
+      .split(/[|,;+]/)
+      .map((t: string) => t.trim().toLowerCase())
+      .filter((t: string) => validTypes.includes(t));
+    const type = rawTypes.length > 0 ? rawTypes.join("+") : "brick-and-mortar";
     const now = new Date().toISOString();
 
     const store = {
@@ -83,7 +88,7 @@ async function main() {
       name,
       description: row.description?.trim() || null,
       categories,
-      type: ["brick-and-mortar", "online", "both", "mobile"].includes(type) ? type : "brick-and-mortar",
+      type,
       status: "active",
       website: row.website?.trim() || null,
       email: row.email?.trim() || null,

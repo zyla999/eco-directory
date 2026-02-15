@@ -208,7 +208,12 @@ export default function ImportPage() {
       const address = row.address?.trim() || "";
       const id = makeId(name, city, address);
       const categories = parseCategories(row.categories || "");
-      const type = row.type?.trim().toLowerCase() || "brick-and-mortar";
+      const validTypes = ["brick-and-mortar", "online", "both", "mobile"];
+      const rawTypes = (row.type || "brick-and-mortar")
+        .split(/[|,;+]/)
+        .map((t: string) => t.trim().toLowerCase())
+        .filter((t: string) => validTypes.includes(t));
+      const type = rawTypes.length > 0 ? rawTypes.join("+") : "brick-and-mortar";
       const now = new Date().toISOString();
 
       const state = row.state?.trim() || "";
@@ -219,7 +224,7 @@ export default function ImportPage() {
       let lng: number | null = null;
       let geocoded = false;
 
-      if (type !== "online" && (city || state)) {
+      if (!type.startsWith("online") && (city || state)) {
         const coords = await geocode(address, city, state, country);
         if (coords) {
           lat = coords.lat;
@@ -233,7 +238,7 @@ export default function ImportPage() {
         name,
         description: row.description?.trim() || null,
         categories,
-        type: ["brick-and-mortar", "online", "both", "mobile"].includes(type) ? type : "brick-and-mortar",
+        type,
         status: "needs-review" as const,
         website: row.website?.trim() || null,
         email: row.email?.trim() || null,
