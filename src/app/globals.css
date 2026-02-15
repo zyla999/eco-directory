@@ -426,8 +426,46 @@ body {
 }
 
 /* ══════════════════════════════════════
+   Store Detail Page
+   ══════════════════════════════════════ */
+
+.store-detail-link {
+  transition: color 0.2s ease;
+}
+
+.store-detail-link:hover {
+  color: var(--eco-forest) !important;
+}
+
+.store-social-icon {
+  transition: all 0.25s ease;
+}
+
+.store-social-icon:hover {
+  background: var(--eco-forest) !important;
+  color: var(--eco-cream) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 58, 45, 0.2);
+}
+
+/* ══════════════════════════════════════
    Accessibility: Reduced Motion
    ══════════════════════════════════════ */
+
+/* ══════════════════════════════════════
+   Skeleton Loading
+   ══════════════════════════════════════ */
+
+.skeleton-pulse {
+  background: linear-gradient(90deg, #EDEAE4 25%, #E5E1DA 50%, #EDEAE4 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-on-scroll {
@@ -457,5 +495,13 @@ body {
 
   .eco-cta-button:hover {
     transform: none;
+  }
+
+  .store-social-icon:hover {
+    transform: none;
+  }
+
+  .skeleton-pulse {
+    animation: none;
   }
 }

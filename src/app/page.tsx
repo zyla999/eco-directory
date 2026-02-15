@@ -5,7 +5,7 @@ import StoreCard from "@/components/StoreCard";
 import CategoryCard from "@/components/CategoryCard";
 import SponsorCard from "@/components/SponsorCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { getAllStores, getCategories, getStoreStats, getSponsorsByPlacement } from "@/lib/stores";
+import { getAllStores, getCategories, getStoreStats, getSponsorsByPlacement, getStatesWithStores } from "@/lib/stores";
 
 export const revalidate = 3600;
 
@@ -14,8 +14,12 @@ export default async function Home() {
   const categories = await getCategories();
   const stats = await getStoreStats();
   const homepageSponsors = await getSponsorsByPlacement("homepage-featured");
+  const statesWithStores = await getStatesWithStores();
 
   const featuredStores = stores.slice(0, 4);
+
+  const canadaStates = statesWithStores.filter((s) => s.country === "Canada");
+  const usaStates = statesWithStores.filter((s) => s.country === "USA");
 
   // Shuffle stores for hero mosaic — changes each revalidation (hourly)
   const shuffled = [...stores].sort(() => Math.random() - 0.5);
@@ -205,6 +209,90 @@ export default async function Home() {
               </AnimateOnScroll>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Browse by Region ── */}
+      <section className="py-20 md:py-24" style={{ background: '#EDEAE4' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateOnScroll animation="fade-in">
+            <div className="max-w-2xl mb-14">
+              <p className="eco-overline mb-4" style={{ color: '#7A756E' }}>Locations</p>
+              <h2
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontSize: '2.25rem',
+                  color: '#2A2A28',
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.15,
+                }}
+              >
+                Browse by Region
+              </h2>
+            </div>
+          </AnimateOnScroll>
+
+          {/* Canada */}
+          {canadaStates.length > 0 && (
+            <div className="mb-12">
+              <AnimateOnScroll animation="fade-in">
+                <p className="eco-overline mb-5" style={{ color: '#5B7F67' }}>Canada</p>
+              </AnimateOnScroll>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+                {canadaStates.map((state, i) => (
+                  <AnimateOnScroll
+                    key={state.slug}
+                    animation="fade-in-up"
+                    stagger={Math.min(i + 1, 8)}
+                  >
+                    <Link
+                      href={`/location/${state.slug}`}
+                      className="block rounded-lg p-4 card-hover-lift text-center"
+                      style={{ background: '#F8F5F0', border: '1px solid #DDD8D0' }}
+                    >
+                      <div className="font-medium text-sm" style={{ color: '#2A2A28' }}>
+                        {state.stateName}
+                      </div>
+                      <div className="text-xs mt-1" style={{ color: '#7A756E' }}>
+                        {state.storeCount} {state.storeCount === 1 ? 'business' : 'businesses'}
+                      </div>
+                    </Link>
+                  </AnimateOnScroll>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* United States */}
+          {usaStates.length > 0 && (
+            <div>
+              <AnimateOnScroll animation="fade-in">
+                <p className="eco-overline mb-5" style={{ color: '#5B7F67' }}>United States</p>
+              </AnimateOnScroll>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+                {usaStates.map((state, i) => (
+                  <AnimateOnScroll
+                    key={state.slug}
+                    animation="fade-in-up"
+                    stagger={Math.min(i + 1, 8)}
+                  >
+                    <Link
+                      href={`/location/${state.slug}`}
+                      className="block rounded-lg p-4 card-hover-lift text-center"
+                      style={{ background: '#F8F5F0', border: '1px solid #DDD8D0' }}
+                    >
+                      <div className="font-medium text-sm" style={{ color: '#2A2A28' }}>
+                        {state.stateName}
+                      </div>
+                      <div className="text-xs mt-1" style={{ color: '#7A756E' }}>
+                        {state.storeCount} {state.storeCount === 1 ? 'business' : 'businesses'}
+                      </div>
+                    </Link>
+                  </AnimateOnScroll>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

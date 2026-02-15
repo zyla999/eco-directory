@@ -49,32 +49,44 @@ export default async function StatePage({ params }: StatePageProps) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm">
-        <ol className="flex items-center gap-2 text-gray-500">
+        <ol className="flex items-center gap-2" style={{ color: 'var(--eco-warm-gray)' }}>
           <li>
-            <Link href="/" className="hover:text-green-600">
+            <Link href="/" className="store-detail-link" style={{ color: 'var(--eco-warm-gray)' }}>
               Home
             </Link>
           </li>
           <li>/</li>
           <li>
-            <Link href="/stores" className="hover:text-green-600">
+            <Link href="/stores" className="store-detail-link" style={{ color: 'var(--eco-warm-gray)' }}>
               Directory
             </Link>
           </li>
           <li>/</li>
-          <li className="text-gray-900">{stateInfo.stateName}</li>
+          <li style={{ color: 'var(--eco-charcoal)' }}>{stateInfo.stateName}</li>
         </ol>
       </nav>
 
+      {/* Header Banner */}
       <AnimateOnScroll animation="fade-in-up">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Eco-Friendly Businesses in {stateInfo.stateName}
-          </h1>
-          <p className="text-gray-600">
-            {stores.length} business{stores.length !== 1 ? "es" : ""} listed in{" "}
-            {stateInfo.stateName}, {stateInfo.country}
-          </p>
+        <div
+          className="relative rounded-xl overflow-hidden mb-10"
+          style={{ background: 'var(--eco-forest)' }}
+        >
+          <div className="eco-hero-grain" />
+          <div className="relative z-[1] p-8 sm:p-10 md:p-12">
+            <p className="eco-overline mb-3" style={{ color: 'rgba(248,245,240,0.5)' }}>
+              Region
+            </p>
+            <h1
+              className="eco-display"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'var(--eco-cream)' }}
+            >
+              {stateInfo.stateName}
+            </h1>
+            <p className="mt-2" style={{ color: 'rgba(248,245,240,0.6)' }}>
+              {stores.length} business{stores.length !== 1 ? "es" : ""} &middot; {stateInfo.country}
+            </p>
+          </div>
         </div>
       </AnimateOnScroll>
 
@@ -101,13 +113,17 @@ export default async function StatePage({ params }: StatePageProps) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-500">
+        <div
+          className="text-center py-12 rounded-lg"
+          style={{ background: 'var(--eco-mist)' }}
+        >
+          <p style={{ color: 'var(--eco-charcoal)' }}>
             No businesses found in {stateInfo.stateName} yet.
           </p>
           <Link
             href="/submit"
-            className="text-green-600 hover:text-green-700 font-medium mt-2 inline-block"
+            className="font-medium mt-2 inline-block store-detail-link"
+            style={{ color: 'var(--eco-sage)' }}
           >
             List your business
           </Link>
