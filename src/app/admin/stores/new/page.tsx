@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -42,6 +42,13 @@ export default function NewStorePage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const errorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (error && errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [error]);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -68,6 +75,7 @@ export default function NewStorePage() {
     lat: "",
     lng: "",
     logo: "",
+    featured: false,
     offers_wholesale: false,
     offers_local_delivery: false,
   });
@@ -84,8 +92,15 @@ export default function NewStorePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSaving(true);
     setError("");
+
+    if (!form.name) { setError("Name is required."); return; }
+    if (form.categories.length === 0) { setError("Select at least one category."); return; }
+    if (form.types.length === 0) { setError("Select at least one store type."); return; }
+    if (form.types.includes("brick-and-mortar") && !form.city) { setError("City is required for brick-and-mortar stores."); return; }
+    if (form.types.includes("brick-and-mortar") && !form.state) { setError("State is required for brick-and-mortar stores."); return; }
+
+    setSaving(true);
 
     const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     let id = `${slug(form.name)}-${slug(form.city || "online")}`;
@@ -94,7 +109,7 @@ export default function NewStorePage() {
       if (num) id = `${id}-${num[0]}`;
     }
 
-    const { error: dbError } = await createClient().from("stores").insert({
+    const store = {
       id,
       name: form.name,
       description: form.description || null,
@@ -121,18 +136,12 @@ export default function NewStorePage() {
       lat: form.lat ? parseFloat(form.lat) : null,
       lng: form.lng ? parseFloat(form.lng) : null,
       logo: form.logo || null,
+      featured: form.featured,
       offers_wholesale: form.offers_wholesale,
       offers_local_delivery: form.offers_local_delivery,
-    });
+    };
 
-    if (dbError) {
-      setError(dbError.message);
-      setSaving(false);
-      return;
-    }
-
-    // Insert additional locations
-    const toInsert = additionalLocations
+    const locations = additionalLocations
       .filter((loc) => loc.city && loc.state)
       .map((loc) => ({
         store_id: id,
@@ -148,13 +157,17 @@ export default function NewStorePage() {
         phone: loc.phone || null,
       }));
 
-    if (toInsert.length > 0) {
-      const { error: locError } = await createClient().from("store_locations").insert(toInsert);
-      if (locError) {
-        setError(`Store created but locations failed: ${locError.message}`);
-        setSaving(false);
-        return;
-      }
+    const res = await fetch("/api/admin/stores", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ store, locations }),
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      setError(result.error || "Failed to create store.");
+      setSaving(false);
+      return;
     }
 
     router.push("/admin/stores");
@@ -165,7 +178,7 @@ export default function NewStorePage() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Create Store</h1>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div ref={errorRef} className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -176,7 +189,6 @@ export default function NewStorePage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
             <input
               type="text"
-              required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
@@ -256,11 +268,11 @@ export default function NewStorePage() {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City{form.types.includes("brick-and-mortar") && " *"}</label>
-              <input type="text" required={form.types.includes("brick-and-mortar")} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+              <input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">State{form.types.includes("brick-and-mortar") && " *"}</label>
-              <input type="text" required={form.types.includes("brick-and-mortar")} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
+              <input type="text" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
@@ -469,7 +481,7 @@ export default function NewStorePage() {
         {/* ── Admin Settings ── */}
         <fieldset className="space-y-4">
           <legend className="text-xs font-bold text-gray-400 uppercase tracking-wider">Admin Settings</legend>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2">
@@ -477,6 +489,17 @@ export default function NewStorePage() {
                 <option value="needs-review">Needs Review</option>
                 <option value="closed">Closed</option>
               </select>
+            </div>
+            <div className="flex items-end pb-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.featured}
+                  onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                  className="rounded border-gray-300 text-green-600"
+                />
+                <span className="text-sm text-gray-700">Featured</span>
+              </label>
             </div>
             <div className="flex items-end pb-1">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -507,7 +530,7 @@ export default function NewStorePage() {
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            disabled={saving || !form.name || form.categories.length === 0 || form.types.length === 0}
+            disabled={saving}
             className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
           >
             {saving ? "Creating..." : "Create Store"}

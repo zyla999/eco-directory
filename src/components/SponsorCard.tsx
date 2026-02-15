@@ -16,7 +16,7 @@ export default function SponsorCard({ sponsor, variant }: SponsorCardProps) {
         rel="noopener noreferrer"
         className="block border-2 border-amber-200 bg-amber-50/50 rounded-lg overflow-hidden hover:shadow-md transition"
       >
-        <div className="relative">
+        <div className="relative max-h-[280px] overflow-hidden">
           <span className="absolute top-2 left-2 z-10 text-xs font-medium text-amber-600 bg-amber-50/90 px-2 py-0.5 rounded uppercase tracking-wider">
             Sponsored
           </span>
@@ -27,35 +27,44 @@ export default function SponsorCard({ sponsor, variant }: SponsorCardProps) {
               muted
               loop
               playsInline
-              className="w-full aspect-video object-cover"
+              className="w-full object-cover"
+              style={{ maxHeight: "280px" }}
             />
           ) : (
             <Image
               src={sponsor.image!}
               alt={`${sponsor.name} ad`}
-              width={600}
-              height={300}
-              className="w-full aspect-video object-cover"
+              width={1200}
+              height={280}
+              className="w-full object-cover"
+              style={{ maxHeight: "280px" }}
             />
           )}
         </div>
-        <div className="p-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="p-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             {sponsor.logo && (
               <Image
                 src={sponsor.logo}
                 alt={`${sponsor.name} logo`}
-                width={24}
-                height={24}
-                className="w-6 h-6 object-contain rounded flex-shrink-0"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain rounded flex-shrink-0"
               />
             )}
-            <span className="text-sm font-medium text-gray-900 truncate">
-              {sponsor.name}
-            </span>
+            <div className="min-w-0">
+              <span className="text-sm font-semibold text-gray-900 truncate block">
+                {sponsor.name}
+              </span>
+              {sponsor.description && (
+                <p className="text-xs text-gray-600 mt-0.5 line-clamp-1">
+                  {sponsor.description}
+                </p>
+              )}
+            </div>
           </div>
           {sponsor.cta && (
-            <span className="bg-amber-500 text-white text-xs px-3 py-1 rounded-lg font-medium hover:bg-amber-600 transition whitespace-nowrap flex-shrink-0">
+            <span className="bg-amber-500 text-white text-xs px-4 py-1.5 rounded-lg font-medium hover:bg-amber-600 transition whitespace-nowrap flex-shrink-0">
               {sponsor.cta}
             </span>
           )}

@@ -105,11 +105,31 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   if (deliveryFilter) stateBaseParams.delivery = "true";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Browse Directory</h1>
-        <SearchBar initialQuery={query} />
+    <div>
+      {/* Search Banner */}
+      <div
+        className="relative overflow-hidden"
+        style={{ background: "#1B3A2D" }}
+      >
+        <div className="eco-hero-grain" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 relative z-10">
+          <h1
+            className="text-3xl md:text-4xl font-bold mb-5"
+            style={{ fontFamily: "var(--font-fraunces)", color: "#FAF8F4" }}
+          >
+            Browse Directory
+          </h1>
+          <div className="max-w-2xl">
+            <SearchBar initialQuery={query} />
+          </div>
+          <p className="mt-3 text-sm" style={{ color: "rgba(250,248,244,0.5)" }}>
+            {stores.length} business{stores.length !== 1 ? "es" : ""} listed
+            {query && <> for &ldquo;{query}&rdquo;</>}
+          </p>
+        </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       {/* Near Me info line */}
       {userLat != null && (
@@ -207,11 +227,6 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
 
         {/* Store Grid */}
         <div className="flex-1">
-          <div className="mb-4 text-gray-600">
-            {stores.length} business{stores.length !== 1 ? "es" : ""} found
-            {query && ` for "${query}"`}
-          </div>
-
           {stores.length > 0 ? (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {stores.map((store, i) => {
@@ -254,6 +269,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

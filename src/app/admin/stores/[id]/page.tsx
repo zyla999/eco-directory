@@ -159,7 +159,7 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
     setSaving(true);
     setError("");
 
-    const { error: dbError } = await createClient().from("stores").update({
+    const store = {
       name: form.name,
       description: form.description || null,
       categories: form.categories,
@@ -189,19 +189,9 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
       offers_wholesale: form.offers_wholesale,
       offers_local_delivery: form.offers_local_delivery,
       review_notes: form.review_notes || null,
-    }).eq("id", id);
+    };
 
-    if (dbError) {
-      setError(dbError.message);
-      setSaving(false);
-      return;
-    }
-
-    // Save additional locations: delete all then re-insert
-    const supabase = createClient();
-    await supabase.from("store_locations").delete().eq("store_id", id);
-
-    const toInsert = additionalLocations
+    const locations = additionalLocations
       .filter((loc) => loc.city && loc.state)
       .map((loc) => ({
         store_id: id,
@@ -217,13 +207,17 @@ export default function EditStorePage({ params }: { params: Promise<{ id: string
         phone: loc.phone || null,
       }));
 
-    if (toInsert.length > 0) {
-      const { error: locError } = await supabase.from("store_locations").insert(toInsert);
-      if (locError) {
-        setError(`Store saved but locations failed: ${locError.message}`);
-        setSaving(false);
-        return;
-      }
+    const res = await fetch(`/api/admin/stores/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ store, locations }),
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      setError(result.error || "Failed to save store.");
+      setSaving(false);
+      return;
     }
 
     router.push("/admin/stores");

@@ -77,13 +77,19 @@ export default function AdminStoresPage() {
   }
 
   async function updateStatus(storeId: string, newStatus: string) {
-    await createClient().from("stores").update({ status: newStatus }).eq("id", storeId);
+    await fetch("/api/admin/stores", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: storeId, status: newStatus }),
+    });
     loadStores();
   }
 
   async function deleteStore(storeId: string) {
     if (!confirm("Are you sure you want to delete this store?")) return;
-    await createClient().from("stores").delete().eq("id", storeId);
+    await fetch(`/api/admin/stores?id=${encodeURIComponent(storeId)}`, {
+      method: "DELETE",
+    });
     loadStores();
   }
 

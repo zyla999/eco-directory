@@ -5,7 +5,7 @@ import StoreCard from "@/components/StoreCard";
 import CategoryCard from "@/components/CategoryCard";
 import SponsorCard from "@/components/SponsorCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { getAllStores, getCategories, getStoreStats, getSponsorsByPlacement, getStatesWithStores } from "@/lib/stores";
+import { getAllStores, getFeaturedStores, getCategories, getStoreStats, getSponsorsByPlacement, getStatesWithStores } from "@/lib/stores";
 
 export const revalidate = 3600;
 
@@ -15,8 +15,7 @@ export default async function Home() {
   const stats = await getStoreStats();
   const homepageSponsors = await getSponsorsByPlacement("homepage-featured");
   const statesWithStores = await getStatesWithStores();
-
-  const featuredStores = stores.slice(0, 4);
+  const featuredStores = await getFeaturedStores(4);
 
   const canadaStates = statesWithStores.filter((s) => s.country === "Canada");
   const usaStates = statesWithStores.filter((s) => s.country === "USA");
@@ -298,7 +297,7 @@ export default async function Home() {
 
       {/* ── Sponsor Banner ── */}
       {homepageSponsors.length > 0 && (
-        <section className="pb-8">
+        <section className="pt-16 pb-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll animation="fade-in">
               <SponsorCard sponsor={homepageSponsors[0]} variant="banner" />

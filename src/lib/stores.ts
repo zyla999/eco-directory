@@ -154,6 +154,22 @@ export const getAllStores = cache(async (): Promise<Store[]> => {
   return (data || []).map(transformStore);
 });
 
+export const getFeaturedStores = cache(async (limit = 4): Promise<Store[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .eq("featured", true)
+    .order("name")
+    .limit(limit);
+
+  if (error) {
+    console.error("getFeaturedStores error:", error);
+    return [];
+  }
+  return (data || []).map(transformStore);
+});
+
 export const getStoreById = cache(async (id: string): Promise<Store | undefined> => {
   const { data, error } = await supabaseAdmin
     .from("stores")

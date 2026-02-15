@@ -188,8 +188,38 @@ export default function AdminSponsorsPage() {
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Logo Path</label>
-              <input type="text" value={form.logo} onChange={(e) => setForm({ ...form, logo: e.target.value })} className="w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
+              {form.logo ? (
+                <div className="flex items-center gap-2">
+                  <img src={form.logo} alt="Logo" className="w-10 h-10 object-contain rounded border border-gray-200" />
+                  <input type="text" value={form.logo} onChange={(e) => setForm({ ...form, logo: e.target.value })} className="flex-1 rounded border border-gray-300 px-3 py-1.5 text-xs" />
+                  <button type="button" onClick={() => setForm({ ...form, logo: "" })} className="text-xs text-red-600 hover:text-red-700">Remove</button>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const filename = `sponsors/${form.id || "new"}-logo-${Date.now()}.${file.name.split(".").pop()}`;
+                      const supabase = createClient();
+                      const { error: uploadErr } = await supabase.storage
+                        .from("logos")
+                        .upload(filename, file, { contentType: file.type, upsert: true });
+                      if (uploadErr) {
+                        alert(`Upload failed: ${uploadErr.message}`);
+                        return;
+                      }
+                      const { data: { publicUrl } } = supabase.storage.from("logos").getPublicUrl(filename);
+                      setForm((prev) => ({ ...prev, logo: publicUrl }));
+                    }}
+                    className="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:bg-green-50 file:text-green-700 file:text-xs hover:file:bg-green-100"
+                  />
+                  <input type="text" value={form.logo} onChange={(e) => setForm({ ...form, logo: e.target.value })} placeholder="Or paste URL" className="w-full rounded border border-gray-300 px-3 py-1.5 text-xs mt-1" />
+                </>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
@@ -204,9 +234,41 @@ export default function AdminSponsorsPage() {
           {/* Ad Media */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ad Image URL</label>
-              <input type="url" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://example.com/ad-banner.jpg" className="w-full rounded border border-gray-300 px-3 py-2 text-sm" />
-              <p className="text-xs text-gray-400 mt-1">Banner image displayed as the ad (16:9 ratio works best)</p>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Ad Image</label>
+              {form.image ? (
+                <div className="space-y-2">
+                  <img src={form.image} alt="Ad preview" className="w-full aspect-video object-cover rounded border border-gray-200" />
+                  <div className="flex items-center gap-2">
+                    <input type="url" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="flex-1 rounded border border-gray-300 px-3 py-1.5 text-xs" />
+                    <button type="button" onClick={() => setForm({ ...form, image: "" })} className="text-xs text-red-600 hover:text-red-700 whitespace-nowrap">Remove</button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const filename = `sponsors/${form.id || "new"}-${Date.now()}-${file.name.replace(/[^a-z0-9._-]/gi, "")}`;
+                      const supabase = createClient();
+                      const { error: uploadErr } = await supabase.storage
+                        .from("logos")
+                        .upload(filename, file, { contentType: file.type, upsert: true });
+                      if (uploadErr) {
+                        alert(`Upload failed: ${uploadErr.message}`);
+                        return;
+                      }
+                      const { data: { publicUrl } } = supabase.storage.from("logos").getPublicUrl(filename);
+                      setForm((prev) => ({ ...prev, image: publicUrl }));
+                    }}
+                    className="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:font-medium hover:file:bg-green-100"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">16:9 ratio (1200x675px recommended). Or paste a URL:</p>
+                  <input type="url" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://example.com/ad-banner.jpg" className="w-full rounded border border-gray-300 px-3 py-1.5 text-xs mt-1" />
+                </>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Ad Video URL</label>
