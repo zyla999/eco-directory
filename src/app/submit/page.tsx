@@ -23,7 +23,7 @@ export default function SubmitPage() {
     name: "",
     description: "",
     categories: [] as StoreCategory[],
-    type: "brick-and-mortar",
+    types: ["brick-and-mortar"] as string[],
     website: "",
     email: "",
     phone: "",
@@ -58,10 +58,14 @@ export default function SubmitPage() {
     setError("");
 
     try {
+      const type = formData.types.length > 0
+        ? [...formData.types].sort().join("+")
+        : "brick-and-mortar";
+
       const res = await fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, type }),
       });
 
       const data = await res.json();
@@ -191,46 +195,29 @@ export default function SubmitPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Store Type *
               </label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="type"
-                    value="brick-and-mortar"
-                    checked={formData.type === "brick-and-mortar"}
-                    onChange={(e) =>
-                      setFormData({ ...formData, type: e.target.value })
-                    }
-                    className="border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">Physical Store</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="type"
-                    value="online"
-                    checked={formData.type === "online"}
-                    onChange={(e) =>
-                      setFormData({ ...formData, type: e.target.value })
-                    }
-                    className="border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">Online Only</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="type"
-                    value="both"
-                    checked={formData.type === "both"}
-                    onChange={(e) =>
-                      setFormData({ ...formData, type: e.target.value })
-                    }
-                    className="border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">Both</span>
-                </label>
+              <div className="flex flex-wrap gap-4">
+                {[
+                  { value: "brick-and-mortar", label: "Physical Store" },
+                  { value: "online", label: "Online" },
+                  { value: "mobile", label: "Mobile" },
+                ].map((t) => (
+                  <label key={t.value} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.types.includes(t.value)}
+                      onChange={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          types: prev.types.includes(t.value)
+                            ? prev.types.filter((v) => v !== t.value)
+                            : [...prev.types, t.value],
+                        }))
+                      }
+                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    />
+                    <span className="text-sm text-gray-700">{t.label}</span>
+                  </label>
+                ))}
               </div>
             </div>
 
@@ -328,7 +315,7 @@ export default function SubmitPage() {
         </section>
 
         {/* Location */}
-        {formData.type !== "online" && (
+        {!(formData.types.length === 1 && formData.types[0] === "online") && (
           <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Location
@@ -364,7 +351,7 @@ export default function SubmitPage() {
                   <input
                     type="text"
                     id="city"
-                    required={formData.type !== "online"}
+                    required={formData.types.includes("brick-and-mortar") || formData.types.includes("mobile")}
                     value={formData.city}
                     onChange={(e) =>
                       setFormData({ ...formData, city: e.target.value })
@@ -382,7 +369,7 @@ export default function SubmitPage() {
                   <input
                     type="text"
                     id="state"
-                    required={formData.type !== "online"}
+                    required={formData.types.includes("brick-and-mortar") || formData.types.includes("mobile")}
                     value={formData.state}
                     onChange={(e) =>
                       setFormData({ ...formData, state: e.target.value })
@@ -579,7 +566,8 @@ export default function SubmitPage() {
               loading ||
               !formData.name ||
               !formData.description ||
-              formData.categories.length === 0
+              formData.categories.length === 0 ||
+              formData.types.length === 0
             }
             className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
