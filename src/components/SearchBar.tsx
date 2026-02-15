@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useId } from "react";
 import { useRouter } from "next/navigation";
 
 interface SearchBarProps {
@@ -28,6 +28,10 @@ export default function SearchBar({
   const router = useRouter();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const requestIdRef = useRef(0);
+
+  // Stable IDs for ARIA combobox wiring
+  const listboxId = useId();
 
   // Debounced autocomplete fetch
   const fetchSuggestions = useCallback(async (q: string) => {
@@ -35,9 +39,18 @@ export default function SearchBar({
       setSuggestions([]);
       return;
     }
+
+    const currentRequestId = ++requestIdRef.current;
+
     try {
       const res = await fetch(`/api/stores/search?q=${encodeURIComponent(q)}`);
       const data = await res.json();
+
+      // Ignore out-of-order responses
+      if (currentRequestId !== requestIdRef.current) {
+        return;
+      }
+
       const items: Suggestion[] = [];
 
       for (const s of data.stores || []) {
@@ -111,18 +124,27 @@ export default function SearchBar({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showSuggestions || suggestions.length === 0) return;
+    const hasSuggestions = showSuggestions && suggestions.length > 0;
+
+    if (!hasSuggestions) return;
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      e.stopPropagation();
       setActiveIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
+      e.stopPropagation();
       setActiveIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
-    } else if (e.key === "Enter" && activeIndex >= 0) {
-      e.preventDefault();
-      handleSelect(suggestions[activeIndex].href);
+    } else if (e.key === "Enter") {
+      if (activeIndex >= 0) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSelect(suggestions[activeIndex].href);
+      }
     } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
       setShowSuggestions(false);
     }
   };
@@ -152,6 +174,8 @@ export default function SearchBar({
     category: "Category",
   };
 
+  const suggestionsOpen = showSuggestions && suggestions.length > 0;
+
   return (
     <div ref={wrapperRef} className="w-full relative">
       <form onSubmit={handleSubmit}>
@@ -178,8 +202,14 @@ export default function SearchBar({
               color: "var(--eco-charcoal)",
             }}
             role="combobox"
-            aria-expanded={showSuggestions}
+            aria-expanded={suggestionsOpen}
             aria-autocomplete="list"
+            aria-controls={suggestionsOpen ? listboxId : undefined}
+            aria-activedescendant={
+              suggestionsOpen && activeIndex >= 0
+                ? `${listboxId}-option-${activeIndex}`
+                : undefined
+            }
           />
 
           {/* Near Me button */}
@@ -238,8 +268,9 @@ export default function SearchBar({
       )}
 
       {/* Autocomplete dropdown */}
-      {showSuggestions && suggestions.length > 0 && (
+      {suggestionsOpen && (
         <div
+          id={listboxId}
           className="absolute top-full left-0 right-0 mt-1 rounded-lg shadow-lg overflow-hidden z-50"
           style={{
             background: "white",
@@ -250,12 +281,11 @@ export default function SearchBar({
           {suggestions.map((item, i) => (
             <button
               key={`${item.type}-${item.label}-${i}`}
+              id={`${listboxId}-option-${i}`}
               type="button"
               role="option"
               aria-selected={i === activeIndex}
-              className={`w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm transition-colors ${
-                i === activeIndex ? "" : ""
-              }`}
+              className="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm transition-colors"
               style={{
                 background: i === activeIndex ? "var(--eco-mist)" : "white",
                 color: "var(--eco-charcoal)",
