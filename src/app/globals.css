@@ -1,8 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 @import "tailwindcss";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --eco-cream: #F8F5F0;
+  --eco-forest: #1B3A2D;
+  --eco-forest-light: #264E3A;
+  --eco-sage: #5B7F67;
+  --eco-terracotta: #B8654A;
+  --eco-charcoal: #2A2A28;
+  --eco-warm-gray: #7A756E;
+  --eco-border: #DDD8D0;
+  --eco-mist: #EDEAE4;
 }
 
 @theme inline {
@@ -20,12 +30,176 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--eco-cream) !important;
+  color: var(--eco-charcoal);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
 }
 
-/* ── Animation Keyframes ── */
+/* ══════════════════════════════════════
+   Editorial Typography
+   ══════════════════════════════════════ */
+
+.eco-display {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  font-optical-sizing: auto;
+}
+
+.eco-overline {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.eco-section-heading {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.75rem;
+  color: var(--eco-charcoal);
+  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
+}
+
+.eco-rule {
+  border: none;
+  height: 1px;
+  background: var(--eco-border);
+  flex: 1;
+}
+
+/* ══════════════════════════════════════
+   Hero Section
+   ══════════════════════════════════════ */
+
+.eco-hero {
+  background: var(--eco-forest);
+  color: var(--eco-cream);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Organic glow — top right */
+.eco-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 70%;
+  height: 180%;
+  background: radial-gradient(ellipse, rgba(91, 127, 103, 0.25) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Warm accent glow — bottom left */
+.eco-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50%;
+  left: -10%;
+  width: 50%;
+  height: 120%;
+  background: radial-gradient(ellipse, rgba(184, 101, 74, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.eco-hero-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ══════════════════════════════════════
+   Stats Band
+   ══════════════════════════════════════ */
+
+.eco-stats-band {
+  background: var(--eco-cream);
+  border-bottom: 1px solid var(--eco-border);
+}
+
+.eco-stat-number {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--eco-forest);
+  font-optical-sizing: auto;
+}
+
+@media (min-width: 768px) {
+  .eco-stat-number {
+    font-size: 3.5rem;
+  }
+}
+
+.eco-stat-label {
+  font-size: 0.75rem;
+  color: var(--eco-warm-gray);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* ══════════════════════════════════════
+   Links
+   ══════════════════════════════════════ */
+
+.eco-link-quiet {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--eco-sage);
+  transition: color 0.2s;
+}
+
+.eco-link-quiet:hover {
+  color: var(--eco-forest);
+}
+
+/* ══════════════════════════════════════
+   CTA Section
+   ══════════════════════════════════════ */
+
+.eco-cta-warm {
+  background: var(--eco-mist);
+  position: relative;
+  overflow: hidden;
+}
+
+.eco-cta-warm::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 50%;
+  height: 160%;
+  background: radial-gradient(ellipse, rgba(91, 127, 103, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.eco-cta-button {
+  display: inline-block;
+  background: var(--eco-forest);
+  color: var(--eco-cream);
+  padding: 0.875rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.eco-cta-button:hover {
+  background: var(--eco-forest-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 58, 45, 0.2);
+}
+
+/* ══════════════════════════════════════
+   Animation Keyframes
+   ══════════════════════════════════════ */
 
 @keyframes fade-in-up {
   from {
@@ -81,7 +255,9 @@ body {
   50% { background-position: 100% 50%; }
 }
 
-/* ── Scroll-triggered animation base ── */
+/* ══════════════════════════════════════
+   Scroll-triggered Animations
+   ══════════════════════════════════════ */
 
 .animate-on-scroll {
   opacity: 0;
@@ -94,7 +270,6 @@ body {
   animation-timing-function: ease-out;
 }
 
-/* Animation type variants applied via data attribute */
 .animate-on-scroll.is-visible[data-animation="fade-in-up"],
 .animate-on-scroll.is-visible.anim-fade-in-up {
   animation-name: fade-in-up;
@@ -131,7 +306,27 @@ body {
 .stagger-7 { animation-delay: 0.7s; }
 .stagger-8 { animation-delay: 0.8s; }
 
-/* ── Hero entrance animations (play on load, not on scroll) ── */
+/* ══════════════════════════════════════
+   Hero Entrance Animations
+   ══════════════════════════════════════ */
+
+@keyframes hero-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-hero-card {
+  animation: hero-card-in 0.7s ease-out both;
+}
+
+.animate-hero-overline {
+  animation: fade-in 0.6s ease-out 0.1s both;
+}
 
 .animate-hero-title {
   animation: fade-in-up 0.8s ease-out 0.2s both;
@@ -145,14 +340,14 @@ body {
   animation: fade-in-up 0.8s ease-out 0.6s both;
 }
 
-/* ── Animated hero gradient ── */
-
 .hero-gradient-animated {
   background-size: 200% 200%;
   animation: hero-gradient-shift 8s ease infinite;
 }
 
-/* ── Card hover effects ── */
+/* ══════════════════════════════════════
+   Card Hover Effects
+   ══════════════════════════════════════ */
 
 .card-hover-lift {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -174,7 +369,9 @@ body {
               0 8px 10px -6px rgba(0, 0, 0, 0.06);
 }
 
-/* ── Nav link animated underline ── */
+/* ══════════════════════════════════════
+   Nav Link Animated Underline
+   ══════════════════════════════════════ */
 
 .nav-link-animated {
   position: relative;
@@ -197,7 +394,9 @@ body {
   transform: scaleX(1);
 }
 
-/* ── Tooltip on hover ── */
+/* ══════════════════════════════════════
+   Badge Tooltip
+   ══════════════════════════════════════ */
 
 .badge-tooltip {
   position: relative;
@@ -226,7 +425,47 @@ body {
   opacity: 1;
 }
 
-/* ── Accessibility: reduced motion ── */
+/* ══════════════════════════════════════
+   Store Detail Page
+   ══════════════════════════════════════ */
+
+.store-detail-link {
+  transition: color 0.2s ease;
+}
+
+.store-detail-link:hover {
+  color: var(--eco-forest) !important;
+}
+
+.store-social-icon {
+  transition: all 0.25s ease;
+}
+
+.store-social-icon:hover {
+  background: var(--eco-forest) !important;
+  color: var(--eco-cream) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 58, 45, 0.2);
+}
+
+/* ══════════════════════════════════════
+   Accessibility: Reduced Motion
+   ══════════════════════════════════════ */
+
+/* ══════════════════════════════════════
+   Skeleton Loading
+   ══════════════════════════════════════ */
+
+.skeleton-pulse {
+  background: linear-gradient(90deg, #EDEAE4 25%, #E5E1DA 50%, #EDEAE4 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-on-scroll {
@@ -234,6 +473,8 @@ body {
   }
 
   .animate-on-scroll.is-visible,
+  .animate-hero-card,
+  .animate-hero-overline,
   .animate-hero-title,
   .animate-hero-subtitle,
   .animate-hero-search,
@@ -250,5 +491,17 @@ body {
 
   .nav-link-animated::after {
     transition: none;
+  }
+
+  .eco-cta-button:hover {
+    transform: none;
+  }
+
+  .store-social-icon:hover {
+    transform: none;
+  }
+
+  .skeleton-pulse {
+    animation: none;
   }
 }

@@ -8,11 +8,12 @@ import {
   getCategories,
   getStatesWithStores,
 } from "@/lib/stores";
+import { haversineKm } from "@/lib/geo";
 
 export const revalidate = 3600;
 
 interface StoresPageProps {
-  searchParams: Promise<{ q?: string; category?: string; state?: string; wholesale?: string; delivery?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; state?: string; wholesale?: string; delivery?: string; near?: string }>;
 }
 
 export default async function StoresPage({ searchParams }: StoresPageProps) {
@@ -22,6 +23,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const stateFilter = params.state || "";
   const wholesaleFilter = params.wholesale === "true";
   const deliveryFilter = params.delivery === "true";
+  const nearParam = params.near || "";
 
   const selectedCategories = categoryFilter
     ? categoryFilter.split(",").map((c) => c.trim()).filter(Boolean)
@@ -53,6 +55,40 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
     stores = stores.filter((s) => s.offersLocalDelivery);
   }
 
+  // Near Me: parse lat,lng and sort by distance
+  let userLat: number | null = null;
+  let userLng: number | null = null;
+  let distanceMap: Map<string, number> | null = null;
+
+  if (nearParam) {
+    const parts = nearParam.split(",");
+    if (parts.length === 2) {
+      const lat = parseFloat(parts[0]);
+      const lng = parseFloat(parts[1]);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        userLat = lat;
+        userLng = lng;
+        distanceMap = new Map();
+
+        for (const store of stores) {
+          const coords = store.location.coordinates;
+          if (coords) {
+            distanceMap.set(store.id, haversineKm(lat, lng, coords.lat, coords.lng));
+          }
+        }
+
+        stores = [...stores].sort((a, b) => {
+          const dA = distanceMap!.get(a.id);
+          const dB = distanceMap!.get(b.id);
+          if (dA == null && dB == null) return 0;
+          if (dA == null) return 1;
+          if (dB == null) return -1;
+          return dA - dB;
+        });
+      }
+    }
+  }
+
   const categories = await getCategories();
   const statesWithStores = await getStatesWithStores();
 
@@ -74,6 +110,20 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Browse Directory</h1>
         <SearchBar initialQuery={query} />
       </div>
+
+      {/* Near Me info line */}
+      {userLat != null && (
+        <div
+          className="mb-6 flex items-center gap-2 text-sm px-4 py-2.5 rounded-lg"
+          style={{ background: "var(--eco-mist)", color: "var(--eco-sage)" }}
+        >
+          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Showing stores nearest to your location
+        </div>
+      )}
 
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
         {/* Filters Sidebar */}
@@ -164,17 +214,31 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
 
           {stores.length > 0 ? (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {stores.map((store, i) => (
-                <div
-                  key={store.id}
-                  className="h-full"
-                  style={{
-                    animation: `fade-in-up 0.5s ease-out ${(i % 6) * 0.08}s both`,
-                  }}
-                >
-                  <StoreCard store={store} />
-                </div>
-              ))}
+              {stores.map((store, i) => {
+                const dist = distanceMap?.get(store.id);
+                return (
+                  <div
+                    key={store.id}
+                    className="h-full relative"
+                    style={{
+                      animation: `fade-in-up 0.5s ease-out ${(i % 6) * 0.08}s both`,
+                    }}
+                  >
+                    {dist != null && (
+                      <span
+                        className="absolute top-2 left-2 z-10 px-2.5 py-1 text-xs font-medium rounded-full"
+                        style={{
+                          background: "var(--eco-forest)",
+                          color: "var(--eco-cream)",
+                        }}
+                      >
+                        {dist < 1 ? "< 1 km" : `${Math.round(dist)} km`} away
+                      </span>
+                    )}
+                    <StoreCard store={store} />
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
